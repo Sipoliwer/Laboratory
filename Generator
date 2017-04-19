@@ -1,1 +1,77 @@
+#include "stdafx.h"
+#include <iostream>
+#include <random>
+#include <ctime>
+#include <fstream>
+
+using namespace std;
+
+class GenerateArray {
+private:
+	int min, max;
+	int array;
+	mt19937 gen;
+public:
+	unsigned int start_time = clock();
+	GenerateArray(int a, int b, int amount) {
+		min = a;
+		max = b;
+		uniform_int_distribution<int> uid(min, max);
+		ofstream fout("output.txt", ios_base::app);
+		fout << "---------------------------------\n";
+		fout << "min = " << min << " " << "max = " << max << '\n';
+		for (int i = 1; i <= amount; i++)
+		{
+			fout << uid(gen) << ' ';
+			cout << uid(gen) << " ";
+			if (i % 10 == 0)
+				cout << endl;
+			if (i % 10 == 0)
+				fout << '\n';
+		}
+		cout << endl;
+		unsigned int end_time = clock();
+		unsigned int search_time = end_time - start_time;
+		cout << "Function time " << search_time << endl;
+		fout << '\n' << "Search_time = " << search_time << '\n';
+		fout.close();
+		cout << endl;
+	};
+};
+
+int main()
+{
+	int min, max, amount;
+	cout << "Input min,max and an amount of range " << endl;
+	while (true)
+	{
+		cin >> min >> max >> amount;
+		cout << endl;
+		if (min > max)
+		{
+			cout << "Input new min,max" << endl;
+		}
+		else {
+			if (amount <= 0)
+			{
+				cout << "Input new amount" << endl;
+			}
+			else {
+				if (!(cin.good()))
+				{
+					cout << "Not number, repeat" << endl;
+					cin.ignore(10, '\n');
+				}
+				else {
+					GenerateArray(min, max, amount);
+				}
+			}
+			cin.clear();
+			cin.ignore(10, '\n');
+			if (cin.peek() == 'e')
+				break;
+		}
+	}
+	return 0;
+}
 
