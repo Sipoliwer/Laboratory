@@ -1,1 +1,105 @@
 
+#include "stdafx.h"
+#include <iostream>
+#include <stdexcept>
+#include <string>
+
+using namespace std;
+
+class stack{
+private: int array[10];
+public:
+	void push(int)
+	{};
+	int pop()
+	{
+		return 0;
+	};
+	int fetch()
+	{
+		return 0;
+	};
+	int size()
+	{
+		return 0;
+	};
+};
+
+bool expect(string testname,bool result)
+{
+	cout << "Test: " << testname << ";";
+	if (result == true)
+		cout << "success" << endl;
+	else
+		cout << "fail" << endl;
+	return 0;
+};
+
+void test1()
+{
+	string testname = "check overflow_error";
+	stack s;
+	bool result = false;
+	try
+	{
+		for (int i = 0; i < 10; i++)
+			s.push(i);
+	}
+	catch (overflow_error& ex)
+	{
+		result = true;
+	}
+	expect(testname, result);
+};
+void test2()
+{
+	string testname = "check underflow_error";
+	stack s;
+	bool result = false;
+	try
+	{
+		for (int i = 0; i < 10; i++)
+			s.pop();
+	}
+	catch (underflow_error& ex)
+	{
+		result = true;
+	}
+	expect(testname, result);
+};
+void test3()
+{
+	string testname = "check array where 0 elements";
+	stack s;
+	//int amount = 10;
+	bool result = false;
+	try
+	{
+		if (s.size() != 0)
+			throw 10;
+	}
+	catch (int er)
+	{
+		result = true;
+	}
+	expect(testname, result);
+};
+void test4()
+{
+	string testname = "check";
+	stack s;
+
+};
+void start_test()
+{
+	test1();
+	test2();
+	test3();
+};
+
+int main()
+{
+	start_test();
+	return 0;
+}
+
