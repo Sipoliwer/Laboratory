@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include <iostream>
 #include <stdexcept>
@@ -6,7 +5,7 @@
 
 using namespace std;
 
-class stack{
+class stack {
 private: int array[10];
 public:
 	void push(int)
@@ -25,13 +24,13 @@ public:
 	};
 };
 
-bool expect(string testname,bool result)
+bool expect(string testname, bool result)
 {
 	cout << "Test: " << testname << ";";
 	if (result == true)
-		cout << "success" << endl;
+		cout << " success" << endl;
 	else
-		cout << "fail" << endl;
+		cout << " fail" << endl;
 	return 0;
 };
 
@@ -69,32 +68,41 @@ void test2()
 };
 void test3()
 {
-	string testname = "check array where 0 elements";
+	string testname = "check push 10";
 	stack s;
-	//int amount = 10;
-	bool result = false;
-	try
-	{
-		if (s.size() != 0)
-			throw 10;
-	}
-	catch (int er)
-	{
-		result = true;
-	}
-	expect(testname, result);
+	int value = 10;
+	s.push(10);
+	int value_ = s.pop();
+	expect(testname, (value == value_));
 };
 void test4()
 {
-	string testname = "check";
+	string testname = "check pop value = ";
 	stack s;
-
+	for (int i = 9; i >= 0; i--)
+	{
+		string ntestname = testname + to_string(i);
+		expect(ntestname, (i == s.pop()));
+	}
 };
+void test5()
+{
+	string testname = "check fetch value = ";
+	stack s;
+	for (int i = 0; i < 10; i++)
+	{
+		s.push(i);
+		string ntestname_ = testname + to_string(i);
+		expect(ntestname_, (i == s.fetch()));
+	}
+}
 void start_test()
 {
 	test1();
 	test2();
 	test3();
+	test4();
+	test5();
 };
 
 int main()
@@ -102,4 +110,3 @@ int main()
 	start_test();
 	return 0;
 }
-
