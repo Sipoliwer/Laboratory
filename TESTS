@@ -1,0 +1,225 @@
+//Source1.h
+
+#include "Header.h"
+#include <iostream>
+
+using namespace std;
+
+inline int Stack::size()
+{
+	return _top;
+}
+inline bool Stack::empty()
+{
+	return _top ? false : true;
+}
+inline bool Stack::full()
+{
+	return _top < _stack.size() ? false : true;
+}
+
+bool Stack::pop(int &top_value)
+{
+	if (empty())
+		return false;
+	top_value = _stack[--_top];
+	cout << "Stack::pop(): " << top_value << endl;
+	return true;
+}
+
+void Stack::PUSH(int value, int i)
+{
+	_stack[i] = value;
+}
+
+bool Stack::push(int value)
+{
+	cout << "Stack::push(" << value << ")\n";
+	if (full())
+	   return false;
+	_stack[_top++] = value;
+	return true;
+}
+
+void Stack::display()
+{
+	cout << endl;
+	cout << "(" << size() << ") " << endl;
+	cout << "(bot: ";
+	for (int ix = 0; ix < _top; ++ix)
+		cout << _stack[ix] << " ";
+	cout << " :top )\n";
+	cout << endl;
+}
+
+
+//Header.h
+
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <vector>
+using namespace std;
+
+class Stack {
+private:
+	int _top;
+	vector<int>_stack;
+public:
+	Stack(int capacity) :_stack(capacity), _top(0) {}
+	bool pop(int &value);
+	bool push(int value);
+	void PUSH(int value, int i);
+	bool full();
+	bool empty();
+	void display();
+	int size();
+};
+
+#endif
+
+// Main
+#include "Header.h"
+#include <iostream>
+#include <stdexcept>
+#include <string>
+#include <bitset>
+
+using namespace std;
+
+bool expect(string testname, bool result)
+{
+	cout << "Test: " << testname << ";";
+	if (result == true)
+		cout << " success" << endl;
+	else
+		cout << " fail" << endl;
+	return 0;
+};
+
+void test1()
+{
+	string testname = "check overflow_error";
+	Stack s(5);
+	bool result = false;
+	try
+	{
+		for (int i = 0; i < 10; i++)
+			s.push(i);
+	}
+	catch (overflow_error& except)
+	{
+		result = true;
+	}
+	expect(testname, result);
+	s.display();
+};
+/*void test2()
+{
+	string testname = "check underflow_error";
+	Stack s(10);
+	bool result = false;
+	try
+	{
+		for (int i = 0; i < 10; i++)
+			s.pop();
+	}
+	catch (underflow_error& ex)
+	{
+		result = true;
+	}
+	expect(testname, result);
+};*/
+/*void test3()
+{
+	string testname = "check push 10";
+	Stack s(10);
+	int value = 10;
+	s.push(10);
+	int value_ = s.pop();
+	expect(testname, (value == value_));
+};
+void test4()
+{
+	string testname = "check pop value = ";
+	Stack s(10);
+	for (int i = 9; i >= 0; i--)
+	{
+		string ntestname = testname + to_string(i);
+		expect(ntestname, (i == s.pop()));
+	}
+};
+void test5()
+{
+	string testname = "check fetch value = ";
+	Stack s(10);
+	for (int i = 0; i < 10; i++)
+	{
+		s.push(i);
+		string ntestname_ = testname + to_string(i);
+		expect(ntestname_, (i == s.fetch()));
+	}
+}*/
+void start_test()
+{
+	test1();
+	/*test2();
+	test3();
+	test4();
+	test5();*/
+};
+
+int main() {
+	/*Stack stack(32);
+	stack.display();
+	for (int ix = 1; ix < 51; ++ix)
+	{
+		if (ix % 2 == 0)
+			stack.push(ix);
+		if (ix % 5 == 0)
+			stack.display();
+		if (ix % 10 == 0) {
+			int dummy;
+			stack.pop(dummy); stack.pop(dummy);
+			stack.display();
+		}
+	}*/
+	string testname1 = "check overflow_error №2";
+	Stack s(10);
+	int mas[5] = { 0, };
+	bool result = false;
+	try
+	{
+		throw 1;
+		for (int i = 0; i < 10; i++)
+			mas[i] = i;
+	}
+	catch (int a)
+	{
+		result = true;
+	}
+	expect(testname1, result);
+	s.display();
+	start_test();
+	getchar();
+	return 0;
+}
+
+
+/*int main()
+{
+	try
+	{
+		bitset< 33 > bitset;
+		bitset[32] = 1;
+		bitset[0] = 1;
+		unsigned long x = bitset.to_ulong();
+	}
+	catch (exception &e)
+	{
+		cerr << "Caught " << e.what() << endl;
+		cerr << "Type " << typeid(e).name() << endl;
+	};
+	getchar();
+}
+*/
