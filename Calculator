@@ -1,8 +1,124 @@
+// Source1.h
+
+#include "Header.h"
 #include <iostream>
+using namespace std;
+
+	void calculator::addition(int first, int second)
+	{
+		cout << first + second << endl;
+	}
+	void calculator::subtraction(int first, int second)
+	{
+		cout << first - second << endl;
+	}
+	void calculator::multiplication(int first, int second)
+	{
+		cout << first*second << endl;
+	}
+	void calculator::division(int first, int second)
+	{
+		if (second == 0)
+		{
+			cout << endl;
+			cout << "Wrong! Division by 0! " << endl;
+			cout << endl;
+			cout << "Input new second number! " << endl;
+		}
+		else
+		{
+			cout << first / second << endl;
+		}
+	}
+
+// Header.h
+
+#ifndef HEADER_H
+#define HEADER_H
+class calculator
+{
+private: int first, second;
+public:
+	void addition(int, int);
+	void subtraction(int, int);
+	void multiplication(int, int);
+	void division(int, int);
+};
+#endif
+
+
+// Main
+
+#include "Header.h"
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <windows.h>
 
 using namespace std;
 
+void foo()
+{
+	static calculator cal;
+	static int first, second;
+	while (true)
+	{
+		cout << "==============================" << endl;
+		cout << " 1 - addition " << endl;
+		cout << " 2 - substruction " << endl;
+		cout << " 3 - multiplication " << endl;
+		cout << " 4 - division " << endl;
+		cout << "==============================" << endl;
+
+		cout << "Input first and second numbers: "; cin >> first >> second;
+		while(true)
+		{ 
+		if (cin.good())
+		{
+			cin.ignore(10, '\n');
+			break;
+		}
+		cin.clear();
+		cout << endl;
+		cout << "Wrong, it is not number! " << endl;
+		cin.ignore(10, '\n');
+		}
+
+		int input;
+		cout << "Input the number of operation: "; cin >> input;
+		cin.clear();
+
+		if (input == 1)
+		{
+			cal.addition(first, second);
+			Sleep(3000);
+			system("cls");
+		}
+		if (input == 2)
+		{
+			cal.subtraction(first, second);
+			Sleep(3000);
+			system("cls");
+		}
+		if (input == 3)
+		{
+			cal.multiplication(first, second);
+			Sleep(3000);
+			system("cls");
+		}
+		if (input == 4)
+		{
+			cal.division(first, second);
+			Sleep(3000);
+			system("cls");
+		}
+	}
+}
+
 int main()
 {
-   return 0;
+	thread thr(foo);
+	if (thr.joinable())
+		thr.join();
+	return 0;
 }
