@@ -2,34 +2,98 @@
 
 #include "Header.h"
 #include <iostream>
+#include <windows.h>
 using namespace std;
 
-	void calculator::addition(int first, int second)
+void calculator::addition(int first, int second)
+{
+	cout << "Answer: " << first + second << endl;
+}
+void calculator::subtraction(int first, int second)
+{
+	cout << "Answer: " << first - second << endl;
+}
+void calculator::multiplication(int first, int second)
+{
+	cout << "Answer: " << first*second << endl;
+}
+void calculator::division(int first, int second)
+{
+	if (second == 0)
 	{
-		cout << first + second << endl;
+		cout << endl;
+		cout << "Wrong! Division by 0! " << endl;
+		cout << endl;
+		cout << "Input new second number! " << endl;
 	}
-	void calculator::subtraction(int first, int second)
+	else
 	{
-		cout << first - second << endl;
+		cout << "Answer: " << first / second << endl;
 	}
-	void calculator::multiplication(int first, int second)
+}
+void foo()
+{
+	static calculator cal;
+	static int first, second;
+	while (true)
 	{
-		cout << first*second << endl;
-	}
-	void calculator::division(int first, int second)
-	{
-		if (second == 0)
+		cout << "================================" << endl;
+		cout << " 1 - addition " << endl;
+		cout << " 2 - substruction " << endl;
+		cout << " 3 - multiplication " << endl;
+		cout << " 4 - division " << endl;
+		cout << "================================" << endl;
+
+		cout << "Input first and second numbers: "; cin >> first >> second;
+		while (true)
 		{
+			if (cin.good())
+			{
+				cin.ignore(10, '\n');
+				break;
+			}
+			cin.clear();
 			cout << endl;
-			cout << "Wrong! Division by 0! " << endl;
-			cout << endl;
-			cout << "Input new second number! " << endl;
+			cout << "Wrong, it is not number! " << endl;
+			cin.ignore(10, '\n');
 		}
-		else
+
+		int input;
+		cout << "Input the number of operation: "; cin >> input;
+		cin.clear();
+		switch (input)
 		{
-			cout << first / second << endl;
+		case 1:
+			{
+				cal.addition(first, second);
+				Sleep(3000);
+				system("cls");
+			}
+		case 2:
+			{
+				cal.subtraction(first, second);
+				Sleep(3000);
+				system("cls");
+			}
+		case 3:
+			{
+				cal.multiplication(first, second);
+				Sleep(3000);
+				system("cls");
+			}
+		case 4:
+			{
+				cal.division(first, second);
+				Sleep(3000);
+				system("cls");
+			}
+		default: 
+			cout << "Wrong! Input new operation! ";
+			Sleep(3000);
+			system("cls");
 		}
 	}
+}
 
 // Header.h
 
@@ -44,76 +108,15 @@ public:
 	void multiplication(int, int);
 	void division(int, int);
 };
+void foo();
 #endif
-
 
 // Main
 
 #include "Header.h"
-#include <iostream>
 #include <thread>
-#include <chrono>
-#include <windows.h>
 
 using namespace std;
-
-void foo()
-{
-	static calculator cal;
-	static int first, second;
-	while (true)
-	{
-		cout << "==============================" << endl;
-		cout << " 1 - addition " << endl;
-		cout << " 2 - substruction " << endl;
-		cout << " 3 - multiplication " << endl;
-		cout << " 4 - division " << endl;
-		cout << "==============================" << endl;
-
-		cout << "Input first and second numbers: "; cin >> first >> second;
-		while(true)
-		{ 
-		if (cin.good())
-		{
-			cin.ignore(10, '\n');
-			break;
-		}
-		cin.clear();
-		cout << endl;
-		cout << "Wrong, it is not number! " << endl;
-		cin.ignore(10, '\n');
-		}
-
-		int input;
-		cout << "Input the number of operation: "; cin >> input;
-		cin.clear();
-
-		if (input == 1)
-		{
-			cal.addition(first, second);
-			Sleep(3000);
-			system("cls");
-		}
-		if (input == 2)
-		{
-			cal.subtraction(first, second);
-			Sleep(3000);
-			system("cls");
-		}
-		if (input == 3)
-		{
-			cal.multiplication(first, second);
-			Sleep(3000);
-			system("cls");
-		}
-		if (input == 4)
-		{
-			cal.division(first, second);
-			Sleep(3000);
-			system("cls");
-		}
-	}
-}
 
 int main()
 {
