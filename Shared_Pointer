@@ -1,1 +1,234 @@
+// Header.h
 
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <random>
+#include <vector>
+using namespace std;
+
+class Interface
+{
+private: int min, max, amount;  mt19937 gen; vector<int> vec;
+public:
+	void vechno();
+	void setData(int, int, int);
+	int getData();
+	void saveData(int, int, int);
+	void GenerateArray(int, int, int);
+	void ArrayM();
+	void Test();
+};
+#endif
+
+// main.cpp
+
+#include "Header.h"
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int main()
+{
+	Interface c;
+	c.vechno();
+	return 0;
+}
+
+//Source.cpp
+
+#include "Header.h"
+#include <iostream>
+#include <chrono>
+#include <thread>
+#include <fstream>
+#include <string>
+#include <ctime>
+#include <random>
+#include <vector>
+
+using namespace std;
+
+void Interface::setData(int min_, int max_, int amount_)
+{
+	min = min_;
+	max = max_;
+	amount = amount_;
+}
+
+int Interface::getData()
+{
+	cout << "min = " << min << ", " << "max = " << max << ", " << "amount = " << amount << endl;
+	return 0;
+}
+
+void Interface::saveData(int min, int max, int amount)
+{
+	ofstream fout("output.txt", ios_base::app);
+	fout << "---------------------------\n";
+	fout << "min = " << min << " " << "max = " << max << " " << "amount = " << amount << '\n';
+	fout.close();
+}
+
+void Interface::GenerateArray(int min, int max, int amount)
+{
+	uniform_int_distribution<int> uid(min, max);
+	for (int i = 1; i <= amount; i++)
+	{
+		uid(gen);
+	}
+}
+
+int * p;
+
+void Interface::Test()
+{
+	cout << p[0] << endl;
+	for (int i = 0; i < 100; i++)
+	{
+		cout << p[i] << " ";
+		if (i % 10 == 0)
+			cout << endl;
+	}
+	for (auto i : vec)
+	{
+		static int k = 0;
+		cout << i << " ";
+		k++;
+		if (k % 10 == 0)
+			cout << endl;
+	}
+}
+
+void Interface::ArrayM()
+{
+	int k = 100;
+	vector<int> vec(k);
+	p = vec.data();
+	chrono::time_point<chrono::system_clock> start, end;
+	start = chrono::system_clock::now();
+	uniform_int_distribution<int> uid(min, max);
+	for (int i = 0; i < vec.size(); i++)
+	{
+	vec[i] = uid(gen);
+    }
+	end = chrono::system_clock::now();
+	for (int i = 1; i <= 100; i++)
+	{
+		cout << p[i-1] << " ";
+		if (i % 10 == 0)
+			cout << endl;
+	}
+	int elapsed_microseconds = chrono::duration_cast<chrono::microseconds> (end - start).count();
+	time_t end_time = chrono::system_clock::to_time_t(end);
+	cout << "elapsed time: " << elapsed_microseconds << " microsecond\n";
+}
+
+void Interface::vechno()
+{
+	while (true)
+	{
+		cout << "Menu of operations: " << endl;
+		cout << "---------------------------" << endl;
+		cout << "1 - setData " << endl;
+		cout << "2 - getData " << endl;
+		cout << "3 - saveData" << endl;
+		cout << "4 - open file" << endl;
+		cout << "5 - delete information in the file" << endl;
+		cout << "6 - Time of GenerateArray" << endl;
+		cout << "7 - Array" << endl;
+		cout << "---------------------------" << endl;
+		cout << "Input number of operation: ";
+		static int i;
+		cin >> i;
+		switch (i)
+		{
+		case 1:
+		{
+			static int min, max, amount;
+			cout << "___________________________" << endl;
+			cout << "Input min, max and amount: ";
+			cin >> min >> max >> amount;
+			cin.clear();
+			setData(min, max, amount);
+			this_thread::sleep_for(2s);
+			system("cls");
+			break;
+		}
+		case 2:
+		{
+			static int min, max, amount;
+			getData();
+			this_thread::sleep_for(2s);
+			system("cls");
+			break;
+		}
+		case 3:
+		{
+			saveData(min, max, amount);
+			this_thread::sleep_for(2s);
+			system("cls");
+			break;
+		}
+		case 4:
+		{
+			static string sf;
+			ifstream inf;
+			inf.open("output.txt");
+			getline(inf, sf, '\0');
+			inf.close();
+			cout << "___________________________" << endl;
+			cout << sf << endl;
+			cout << "___________________________" << endl;
+			this_thread::sleep_for(2s);
+			system("cls");
+			break;
+		}
+		case 5:
+		{
+			fstream clear_file("output.txt", ios::out);
+			clear_file.close();
+			this_thread::sleep_for(2s);
+			system("cls");
+			break;
+		}
+		case 6:
+		{
+			chrono::time_point<chrono::system_clock> start, end;
+			start = chrono::system_clock::now();
+			GenerateArray(min, max, amount);
+			end = chrono::system_clock::now();
+			int elapsed_microseconds = chrono::duration_cast<chrono::microseconds> (end - start).count();
+			time_t end_time = chrono::system_clock::to_time_t(end);
+			cout << "elapsed time: " << elapsed_microseconds << " microsecond\n";
+			this_thread::sleep_for(7s);
+			system("cls");
+			break;
+		}
+		case 7:
+		{
+			ArrayM();
+			this_thread::sleep_for(10s);
+			system("cls");
+			break;
+		}
+		case 8:
+		{
+			Test();
+			this_thread::sleep_for(8s);
+			system("cls");
+			break;
+		}
+		default:
+		{
+			cout << endl;
+			cout << "___________________________" << endl;
+			cout << "Wrong! Input new operation!" << endl;
+			this_thread::sleep_for(2s);
+			system("cls");
+			break;
+		}
+		}
+	}
+}
