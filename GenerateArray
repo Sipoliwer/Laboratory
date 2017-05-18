@@ -1,0 +1,368 @@
+// Header.h
+
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <random>
+#include <vector>
+#include <fstream>
+using namespace std;
+
+class GArray
+{
+protected: int min, max, amount;  
+		   mt19937 gen; 
+		   vector<int> vec; 
+		   int * p; 
+		   int i; 
+		   int elapsed_microseconds;
+		   string sf;
+		   ifstream inf;
+public:
+	void setInitialValues(int, int, int);
+	int getInitialValues();
+	//void saveData();
+	void GenerateArray();
+	void SaveData();
+	//void NewGenerateArray();
+	void openFile();
+	void deleteFile();
+	void GenerateArrayClear();
+	void viewArray();
+};
+
+class Interface : public GArray
+{
+private: 
+public:
+	void vechno();
+	//void Test();
+};
+
+#endif
+
+// Source.cpp
+
+#include "Header.h"
+#include <iostream>
+#include <chrono>
+#include <thread>
+#include <fstream>
+#include <string>
+#include <ctime>
+#include <random>
+#include <vector>
+
+using namespace std;
+
+void GArray::setInitialValues(int min_, int max_, int amount_)
+{
+	min = min_;
+	max = max_;
+	amount = amount_;
+	vec.resize(amount);
+}
+
+int GArray::getInitialValues()
+{
+	cout << "______________________________________________________________" << endl;
+	cout << "min = " << min << ", " << "max = " << max << ", " << "amount = " << amount << " " << "Elapsed_microseconds = " << elapsed_microseconds << endl;
+	return 0;
+}
+
+void GArray::SaveData()
+{
+	ofstream fout("output.txt", ios_base::app);
+	fout << '\n';
+	fout << "---------------------------------------------------------\n";
+	fout << "min = " << min << " " << "max = " << max << " " << "amount = " << amount << " "<< "Elapsed_microseconds = " << elapsed_microseconds << '\n';
+	for (int i = 1; i <= amount; i++)
+	{
+		fout << vec[i - 1] << " ";
+		if (i % 10 == 0)
+			fout << '\n';
+	}
+	fout.close();
+}
+
+void GArray::openFile()
+{
+	inf.open("output.txt");
+	getline(inf, sf, '\0');
+	inf.close();
+	cout << "______________________________________________" << endl;
+	cout << sf << endl;
+	cout << "______________________________________________" << endl;
+}
+
+void GArray::deleteFile()
+{
+	fstream clear_file("output.txt", ios::out);
+	clear_file.close();
+}
+
+void GArray::GenerateArrayClear()
+{
+    chrono::time_point<chrono::system_clock> start, end;
+    uniform_int_distribution<int> uid(min, max);
+    start = chrono::system_clock::now();
+	for (int i = 1; i <= amount; i++)
+	{
+		uid(gen);
+	}
+	end = chrono::system_clock::now();
+	elapsed_microseconds = chrono::duration_cast<chrono::microseconds> (end - start).count();
+	time_t end_time = chrono::system_clock::to_time_t(end);
+	cout << "Elapsed time: " << elapsed_microseconds << " microsecond\n";
+}
+
+void GArray::GenerateArray()
+{
+	chrono::time_point<chrono::system_clock> start, end;
+	uniform_int_distribution<int> uid(min, max);
+	start = chrono::system_clock::now();
+	for (int i = 0; i < amount; i++)
+	{
+		vec[i] = uid(gen);
+	}
+	end = chrono::system_clock::now();
+	elapsed_microseconds = chrono::duration_cast<chrono::microseconds> (end - start).count();
+	time_t end_time = chrono::system_clock::to_time_t(end);
+	cout << "Elapsed time: " << elapsed_microseconds << " microsecond\n";
+}
+
+void GArray::viewArray()
+{
+	for (int i = 1; i <= vec.size(); i++)
+	{
+		cout << vec[i - 1] << ends;
+		if (i % 10 == 0)
+			cout << endl;
+	}
+	cout << "_____________________________________________" << endl;
+}
+
+/*void GArray::NewGenerateArray()
+{
+	chrono::time_point<chrono::system_clock> start, end;
+	uniform_int_distribution<int> uid(min, max);
+	start = chrono::system_clock::now();
+	for (int i = 0; i < vec.size(); i++)
+	{
+		vec.push_back(uid(gen));
+	}
+	end = chrono::system_clock::now();
+	elapsed_microseconds = chrono::duration_cast<chrono::microseconds> (end - start).count();
+	time_t end_time = chrono::system_clock::to_time_t(end);
+	cout << "elapsed time: " << elapsed_microseconds << " microsecond\n";
+}*/
+
+/*void Interface::Test()
+{
+	cout << p[0] << endl;
+	for (int i = 0; i < 100; i++)
+	{
+		cout << p[i] << " ";
+		if (i % 10 == 0)
+			cout << endl;
+	}
+	for (auto i : vec)
+	{
+		static int k = 0;
+		cout << i << " ";
+		k++;
+		if (k % 10 == 0)
+			cout << endl;
+	}
+}*/
+
+void Interface::vechno()
+{
+	while (true)
+	{
+		cout << "Menu of operations: " << endl;
+		cout << "---------------------------------------------" << endl;
+		cout << "1 - set InitialValues " << endl;
+		cout << "2 - get InitialValues " << endl;
+		cout << "3 - Generate Array" << endl;
+		cout << "8 - view Array" << endl;
+		cout << "4 - save Data" << endl;
+		cout << "5 - open File" << endl;
+		cout << "6 - delete Information in the file" << endl;
+		cout << "7 - Time of Generate Array (ClearTime)" << endl;
+		cout << "---------------------------------------------" << endl;
+
+		cout << "Input number of operation: ";
+		cin >> i;
+		cout << endl;
+		switch (i)
+		{
+		case 1:
+		{
+			cout << "_____________________________________________" << endl;
+			cout << "Input min, max and amount: ";
+			while (true)
+			{
+				cin >> min >> max >> amount;
+				cout << endl;
+				if (!(cin.good()))
+				{
+					cout << "Not number, repeat operation: ";
+					this_thread::sleep_for(2s);
+					cin.ignore(100,'\n');
+				}
+				else
+				if ((min > max) || (amount <= 0))
+				{
+					cout << "Input correct min, max and amount: ";
+					this_thread::sleep_for(2s);
+				}
+				else
+						break;
+			cin.clear();
+			cin.ignore(100, '\n');
+		}
+			cin.clear();
+			setInitialValues(min, max, amount);
+			this_thread::sleep_for(1s);
+			system("cls");
+			break;
+		}
+		case 2:
+		{
+			getInitialValues();
+			this_thread::sleep_for(3s);
+			system("cls");
+			break;
+		}
+		case 3:
+		{
+			GenerateArray();
+			this_thread::sleep_for(2s);
+			system("cls");
+			break;
+		}
+		case 4:
+		{
+			SaveData();
+			this_thread::sleep_for(1s);
+			system("cls");
+			break;
+		}
+		case 5:
+		{
+			openFile();
+			system("pause");
+			system("cls");
+			break;
+		}
+		case 6:
+		{
+			deleteFile();
+			system("cls");
+			break;
+		}
+		case 7:
+		{
+			GenerateArrayClear();
+			this_thread::sleep_for(2s);
+			system("cls");
+			break;
+		}
+		case 8:
+		{
+			if (vec.size() == 0)
+			{
+				cout << endl;
+				cout << "Vector size = 0!" << endl;
+			}
+			viewArray();
+			system("pause");
+			system("cls");
+			break;
+		}
+		default:
+		{
+			cout << endl;
+			cout << "______________________________________________" << endl;
+			cout << "Wrong! Input new operation!" << endl;
+			this_thread::sleep_for(3s);
+			system("cls");
+			break;
+		}
+		}
+	}
+}
+
+// main.cpp
+
+#include "Header.h"
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <random>
+#include <chrono>
+
+using namespace std;
+
+int main()
+{
+	Interface c;
+	c.vechno();
+	/*string sf;
+	ifstream inf;
+	int i; std::cin >> i;
+	vector<int> vector(i);
+	ofstream fout("output.txt", ios_base::app);
+	for (int k = 0; k < i; k++)
+	{
+		vector[k] = k;
+		fout << vector[k] << " ";
+		if (k % 10 == 0)
+			fout << '\n';
+	}
+	for (int i = 0; i < vector.size(); i++)
+	{
+		cout << vector[i] << ends;
+		if (i % 10 == 0)
+			cout << endl;
+	}
+	system("pause");*/
+	/*int i; std::cin >> i;
+	vector<int> vector(i), vec(i), vec1(i);
+	chrono::time_point<chrono::system_clock> start, end, start1, end1, start2, end2;
+	start = chrono::system_clock::now();
+	for (int k = 0; k < i; k++)
+	{
+		vector[k] = k;
+	}
+	end = chrono::system_clock::now();
+	int elapsed_microseconds = chrono::duration_cast<chrono::microseconds> (end - start).count();
+	time_t end_time = chrono::system_clock::to_time_t(end);
+	cout << "elapsed time: " << elapsed_microseconds << " microsecond\n";
+	start1 = chrono::system_clock::now();
+	for (int k = 0; k < i; k++)
+	{
+		vec.push_back(k);
+	}
+	end1 = chrono::system_clock::now();
+	int elapsed_microseconds1 = chrono::duration_cast<chrono::microseconds> (end1 - start1).count();
+	time_t end_time1 = chrono::system_clock::to_time_t(end1);
+	cout << "elapsed time: " << elapsed_microseconds1 << " microsecond\n";
+	int min = 1, max = 9;
+	mt19937 gen;
+	uniform_int_distribution<int> uid(min, max);
+	start2 = chrono::system_clock::now();
+	for (int k = 0; k < i; k++)
+	{
+		vec1[k] = uid(gen);
+	}
+	end2 = chrono::system_clock::now();
+	int elapsed_microseconds2 = chrono::duration_cast<chrono::microseconds> (end2 - start2).count();
+	time_t end_time2 = chrono::system_clock::to_time_t(end2);
+	cout << "elapsed time: " << elapsed_microseconds2 << " microsecond\n";
+	system("pause");
+	*/
+	return 0;
+}
