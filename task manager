@@ -25,3 +25,109 @@ int main()
 	getchar();
 	return 0;
 }
+
+#include "Header.h"
+#include <vector>
+#include <iostream>
+#include <string>
+#include <thread>
+
+using namespace std;
+
+void  TaskManager::setCommand()
+{
+	cout << "Input command to start: " << endl;
+	do{
+		getline(cin, buffer);
+		if (buffer.size() > 0)
+		{
+			vector.push_back(buffer);
+		}
+	} while (buffer != "");
+	vector_size = vector.size();
+}
+
+int TaskManager::getCommand()
+{
+	cout << "Your command: " << endl;
+	for (int i = 0; i < vector_size; i++)
+	{
+		cout << vector[i] << endl;
+	}
+	return 0;
+}
+
+void ThreadFunctiom()
+{
+
+}
+
+void TaskManager::thread_Command()
+{
+	cout << "Amount of thread: "; cin >> i;
+	for (int k = 0; k < i; k++)
+	thr[k] = thread(ThreadFunction);
+}
+
+#include "Header.h"
+#include <windows.h>
+#include <iostream>
+#include <atomic>
+#include <thread>
+#include <chrono>
+
+using namespace std;
+
+int main()
+{
+	atomic<bool> done(false); 
+
+	thread t([&done] {
+		this_thread::sleep_for(chrono::seconds(3));
+		done = true;
+	});
+
+	if (done) {
+		cout << "Thread finished" << endl;
+	}
+	else {
+		cout << "Thread still running" << endl;
+	}
+
+	if (t.joinable())
+	t.join();
+
+	TaskManager task;
+	task.setCommand();
+	task.getCommand();
+	getchar();
+	return 0;
+}
+
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <vector>
+#include <string>
+#include <mutex>
+#include <condition_variable>
+
+using namespace std;
+
+class TaskManager
+{
+private: vector<string> vector; string buffer = "";
+		 unsigned int vector_size;
+		 mutex mut;
+		 condition_variable cond_var;
+		 int i = 1;
+		 thread * thr = new thread[i];
+public : 
+	void setCommand();
+	int getCommand();
+	void thread_Command();
+	void ThreadFunction();
+};
+
+#endif
+
