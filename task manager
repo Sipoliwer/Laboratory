@@ -1,0 +1,27 @@
+1) system(); - команда
+Эта команда вызывает то, что вы передали, cmd.exe 
+2) cmd.exe работать со стандартном exe 
+system -> cmd -> команда
+запускать новый вызов в поток, сохранять id
+либо pool потоков, распределить задачи в потоки(150 задач 4 потока) на выходе успех или нет
+
+// main.cpp
+
+#include "Header.h"
+#include <windows.h>
+#include <iostream>
+#include <atomic>
+#include <thread>
+#include <chrono>
+
+using namespace std;
+
+int main()
+{
+	atomic<bool> done();
+	TaskManager t;
+	t.setCommand();
+	t.getCommand();
+	getchar();
+	return 0;
+}
