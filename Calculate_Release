@@ -1,0 +1,174 @@
+// Header.h
+
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <mutex>
+#include <condition_variable>
+#include <vector>
+using namespace std;
+
+class calculator
+{
+private: int first, second, number_operation;
+		 mutex mt; condition_variable c_v;
+		 typedef void(calculator::* ptofunc)(int, int); ptofunc pt;
+public:
+	void setData(int, int);
+	void addition(int, int);
+	void subtraction(int, int);
+	void multiplication(int, int);
+	void division(int, int);
+	void thr();
+	void foo();
+};
+#endif
+
+//main.cpp
+
+#include "Header.h"
+#include <iostream>
+#include <thread>
+#include <chrono>
+#include <windows.h>
+
+using namespace std;
+
+int main()
+{
+	calculator c;
+	thread t1(&calculator::thr, &c);
+	t1.detach();
+	thread t(&calculator::foo,&c);
+	if (t.joinable())
+		t.join();
+	return 0;
+}
+
+//Source.cpp
+
+#include "Header.h"
+#include <iostream>
+#include <chrono>
+#include <thread>
+
+using namespace std;
+
+bool var_ = false;
+bool ret() { return var_; };
+
+void calculator::setData(int first_, int second_)
+{
+	first = first_;
+	second = second_;
+}
+	void calculator::addition(int first, int second)
+	{
+		//sleep
+		cout << "Answer: "<< first << " + " << second << " = " << first + second << endl;
+	}
+	void calculator::subtraction(int first, int second)
+	{
+		cout << "Answer: " << first << " - " << second << " = " << first - second << endl;
+	}
+	void calculator::multiplication(int first, int second)
+	{
+		cout << "Answer: " << first << " * " << second << " = " << first * second << endl;
+	}
+	void calculator::division(int first, int second)
+	{
+		if (second == 0)
+		{
+			cout << endl;
+			cout << "Wrong! Division by 0! " << endl;
+			cout << endl;
+			cout << "Input new second number! " << endl;
+		}
+		else
+		{
+			cout << "Answer: " << first << " \ " << second << " = " << first / second << endl;
+		}
+	}
+	void calculator::thr()
+	{
+		while (true)
+		{
+			calculator cal;
+			unique_lock<mutex> uil(mt);
+			c_v.wait(uil, ret);
+			thread t1(pt, &cal, first, second);
+			t1.detach();
+			var_ = false;
+		}
+	}
+	void calculator::foo()
+	{
+		calculator cal;
+		while (true)
+		{
+			cout << "             MENU:            " << endl;
+			cout << "==============================" << endl;
+			cout << " 1 - addition " << endl;
+			cout << " 2 - substruction " << endl;
+			cout << " 3 - multiplication " << endl;
+			cout << " 4 - division " << endl;
+			cout << "==============================" << endl;
+
+			cout << "Input first and second numbers: "; cin >> first >> second;
+			setData(first, second);
+			while (true)
+			{
+				if (cin.good())
+				{
+					cin.ignore(10, '\n');
+					break;
+				}
+				cin.clear();
+				cout << endl;
+				cout << "Wrong, it is not number! " << endl;
+				cin.ignore(10, '\n');
+			}
+
+			int input;
+			cout << "Input number of operation: "; cin >> input;
+			cin.clear();
+			switch (input)
+			{
+			case 1:
+			{
+				var_ = true;
+				pt = &calculator::addition;
+				c_v.notify_one();
+				system("cls");
+				break;
+			}
+			case 2:
+			{
+				var_ = true;
+				pt = &calculator::subtraction;
+				c_v.notify_one();
+				system("cls");
+				break;
+			}
+			case 3:
+			{
+				var_ = true;
+				pt = &calculator::multiplication;
+				c_v.notify_one();
+				system("cls");
+				break;
+			}
+			case 4:
+			{
+				var_ = true;
+				pt = &calculator::division;
+				c_v.notify_one();
+				system("cls");
+				break;
+			}
+			default:
+				cout << "Wrong! Input correct operation! " << endl;
+				break;
+			}
+		}
+	}
