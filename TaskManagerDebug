@@ -1,0 +1,215 @@
+// Header.h
+
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <vector>
+#include <string>
+#include <mutex>
+#include <condition_variable>
+
+using namespace std;
+
+class TaskManager
+{
+private: vector<bool> answer1;
+	     vector<string> vector; string buffer = "";
+		 unsigned int vector_size;
+		 mutex mut;
+		 condition_variable cond_var;
+		 int i = 1;
+		 thread * thr = new thread[i];
+		 mutex mt; condition_variable c_v;
+		 typedef void(TaskManager::* ptofunc)(int, int); ptofunc pt;
+public:
+	void setCommand();
+	int getCommand();
+	//void thread_Command();
+	void ThreadMakeCommand(int);
+	//void thr();
+	void foo();
+};
+
+#endif
+
+// Source.cpp
+
+#include "Header.h"
+#include <vector>
+#include <iostream>
+#include <string>
+#include <stdio.h>
+#include <thread>
+#include <stdlib.h>
+#include <exception>
+using namespace std;
+
+bool var_ = false;
+bool ret() { return var_; };
+
+void  TaskManager::setCommand()
+{
+	cout << "Input command to start: " << endl;
+	do {
+		getline(cin, buffer);
+		if (buffer.size() > 0)
+		{
+			vector.push_back(buffer);
+		}
+	} while (buffer != "");
+	vector_size = vector.size();
+}
+int TaskManager::getCommand()
+{
+	cout << "Your command: " << endl;
+	for (int i = 0; i < vector_size; i++)
+	{
+		cout << vector[i] << endl;
+	}
+	return 0;
+}
+/*void TaskManager::thr()
+{
+	while (true)
+	{
+		TaskManager Tk;
+		unique_lock<mutex> uil(mt);
+		c_v.wait(uil, ret);
+		thread t1(pt, &Tk);
+		t1.detach();
+		var_ = false;
+	}
+}*/
+void TaskManager::ThreadMakeCommand(int k)
+{
+	string cmd_str;
+
+	mut.lock();
+	int j = 0;
+	for (int i = 0; i < vector_size; i++)
+	{
+		    cmd_str = vector[i];
+			if (system(cmd_str.c_str()) == 0)
+				answer1[i] = 1;
+			else
+				answer1[i] = 0;
+		//cout << answer1.size() << endl;
+		//cout << i << " - " << answer1[i] << endl;
+	}
+	mut.unlock();
+}
+void TaskManager::foo()
+{
+	TaskManager Tk;
+	while (true)
+	{
+		Tk.setCommand();
+		Tk.getCommand();
+		Tk.ThreadMakeCommand(0);
+		for (int i = 0; i < answer1.size(); i++)
+			cout << i << " - " << answer1[i] << endl;
+	}
+}
+
+// main.cpp
+
+/*#include "Header.h"
+#include <windows.h>
+#include <iostream>
+#include <atomic>
+#include <thread>
+#include <chrono>
+
+using namespace std;
+
+int main()
+{
+	atomic<bool> done(false);
+
+	thread t([&done] {
+		this_thread::sleep_for(chrono::seconds(3));
+		done = true;
+	});
+
+	if (done) {
+		cout << "Thread finished" << endl;
+	}
+	else {
+		cout << "Thread still running" << endl;
+	}
+
+	if (t.joinable())
+		t.join();
+
+	TaskManager task;
+	task.setCommand();
+	task.getCommand();
+	getchar();
+	return 0;
+}*/
+#include "Header.h"
+#include <windows.h>
+#include <iostream>
+#include <atomic>
+#include <thread>
+#include <mutex>
+#include <chrono>
+#include <fstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+//vector<bool> answer1(40);
+
+//НЕ нужно!
+/*void ThreadPrint(vector<int> & vector, int k)
+{
+	mut.lock();
+	int j = 0;
+	cout << endl;
+	for (int i = 0; i < 10; i++) {
+		j = k + 4 * i;
+		cout << vector[j] << " ";
+		if (i % 10 == 0)
+			cout << endl;
+	}
+	mut.unlock();
+}
+
+/*void ThreadMakeCommand(vector<string> & vector, int k)
+{
+	string cmd_str;
+	mut.lock();
+	int j = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		j = k + 4 * i;
+		cmd_str = vector[j];
+		if (system(cmd_str.c_str()))
+			answer1[j] = 0;
+	}
+	mut.unlock();
+}*/
+
+int main()
+{
+	/*vector<int> vector(40);
+	for (int i = 0; i < 40; i++)
+		vector[i] = i;
+	thread thread1(ThreadPrint, ref(vector), 0);
+	thread thread2(ThreadPrint, ref(vector), 1);
+	thread thread3(ThreadPrint, ref(vector), 2);
+	thread thread4(ThreadPrint, ref(vector), 3);
+	thread1.join();
+	thread2.join();
+	thread3.join();
+	thread4.join();
+	atomic<bool> done(false);
+	*/
+	TaskManager task;
+	task.foo();
+	task.setCommand();
+	task.getCommand();
+	system("pause");
+	return 0;
+}
