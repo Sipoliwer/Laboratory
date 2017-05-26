@@ -6,6 +6,72 @@ bookmanager
 копирующий 
 вектор с новой книги, все книги 1-го автора
 
+// Testing Book
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <iterator>
+#include <cstring>
+#include <string>
+using namespace std;
+
+struct Book
+{
+	char *title;
+	char *author;
+	int year;
+};
+
+class BookManager
+{
+private: string author; vector<char> vector;
+public:
+	void search_author(struct Book * b)
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			vector.push_back(*b[i].author);
+			cout << vector[i] << endl;
+		}
+		cout << "Input the author: "; cin >> author;
+		all_of(vector.begin(), vector.end(), [&](int)
+		{
+			/*for (int i = 0; i < 5; i++)
+			{
+				if (author == vector[i])
+					return i;
+			}*/
+			return author == "D";
+		});
+	}
+};
+
+int main()
+{
+	vector<char> vector_char;
+	Book b[5];
+	b[0] = { "Hello, world!", "Damiel Crown", 1997 };
+	b[1] = { "ABCD", "Damiel Crown", 2090 };
+	b[2] = { "Hela", "Acter Var", 1562 };
+	b[3] = { "OOP", "Bac Vard", 2739 };
+	b[4] = { "Z", "Zerd Falc", 1982 };
+	vector<int> vector;
+	for (int i = 0; i < 5; i++)
+	{
+		cout << i << " - " <<b[i].year << " " << endl;
+		vector.push_back(b[i].year);
+		vector_char.push_back(*b[i].title);
+	}
+	sort(vector.begin(), vector.end());
+	copy(vector.begin(), vector.end(), ostream_iterator<int>(cout, " "));
+	sort(vector_char.begin(), vector_char.end());
+	copy(vector_char.begin(), vector_char.end(), ostream_iterator<char>(cout, " "));
+	BookManager bm;
+	bm.search_author(b);
+	system("pause");
+	return 0;
+}
+
 // Header.h
 
 #ifndef HEADER_H
