@@ -1,1 +1,165 @@
+// Header.h
 
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <vector>
+#include <string>
+#include <mutex>
+#include <condition_variable>
+
+using namespace std;
+
+class TaskManager
+{
+private: 
+	     vector<bool> answer;
+	     vector<string> vector; string buffer = "";
+		 unsigned int vector_size;
+		 unsigned int amount_thread;
+		 mutex mut;
+		 condition_variable cond_var;
+		 int i = 1;
+		 thread * thr = new thread[i];
+public:
+	void setCommand();
+	int getCommand();
+	void thread_Command();
+	void ThreadFunction();
+};
+
+#endif
+
+// main.cpp
+
+#include "Header.h"
+#include <windows.h>
+#include <iostream>
+#include <atomic>
+#include <thread>
+#include <mutex>
+#include <chrono>
+#include <fstream>
+#include <string>
+#include <vector>
+
+using namespace std;
+mutex mut;
+vector<bool> answer1(40);
+
+void ThreadPrint(vector<int> & vector,int k)
+{
+	mut.lock();
+	int j = 0;
+	cout << endl;
+	for (int i = 0; i < 10; i++) {
+		j = k + 4 * i;
+		cout << vector[j] << " ";
+		if (i % 10 == 0)
+			cout << endl;
+	}
+	mut.unlock();
+}
+
+void ThreadMakeCommand(vector<string> & vector, int k)
+{
+	string cmd_str;
+	mut.lock();
+	int j = 0;
+	for (int i = 0; i < 10; i++)
+	{
+		j = k + 4 * i;
+		cmd_str = vector[j];
+		if (system(cmd_str.c_str()))
+			answer1[j] = 0;
+	}
+	mut.unlock();
+}
+
+int main()
+{
+	vector<int> vector(40);
+	for (int i = 0; i < 40; i++)
+		vector[i] = i;
+	thread thread1(ThreadPrint, ref(vector), 0);
+	thread thread2(ThreadPrint, ref(vector), 1);
+	thread thread3(ThreadPrint, ref(vector), 2);
+	thread thread4(ThreadPrint, ref(vector), 3);
+	atomic<bool> done(false);
+
+	/*thread t([&done, &vector] {
+		
+		done = true;
+	});
+
+	if (done) {
+		cout << "Thread finished" << endl;
+	}
+	else {
+		cout << "Thread still running" << endl;
+	}
+	
+	
+	if (t.joinable())
+		t.join();
+		*/
+	TaskManager task;
+	task.setCommand();
+	task.getCommand();
+
+	thread1.join();
+	thread2.join();
+	thread3.join();
+	thread4.join();
+	system("pause");
+	return 0;
+}
+
+// Source.cpp
+
+#include "Header.h"
+#include <vector>
+#include <iostream>
+#include <string>
+#include <thread>
+
+using namespace std;
+
+void  TaskManager::setCommand()
+{
+	cout << "Input command to start: " << endl;
+	do {
+		getline(cin, buffer);
+		if (buffer.size() > 0)
+		{
+			vector.push_back(buffer);
+		}
+	} while (buffer != "");
+	vector_size = vector.size();
+	amount_thread = thread::hardware_concurrency();
+	cout << "Input number of threads(from 1 to " << amount_thread << "): ";
+	cin >> i; cout << endl;
+}
+
+int TaskManager::getCommand()
+{
+	cout << "Your command: " << endl;
+	for (int i = 0; i < vector_size; i++)
+	{
+		cout << vector[i] << endl;
+	}
+	cout << "Amount of threads: " << amount_thread << endl;
+	return 0;
+}
+
+void TaskManager::ThreadFunction()
+{
+	cout << "GG" << endl;
+}
+
+void TaskManager::thread_Command()
+{
+	TaskManager A;
+	for (int k = 0; k < i; k++)
+		thr[k] = thread(&TaskManager::ThreadFunction,&A);
+}
