@@ -5,3 +5,15 @@ bookmanager
 0) Добавление новой книги
 копирующий 
 вектор с новой книги, все книги 1-го автора
+
+// Header.h
+
+#ifndef HEADER_H
+#define HEADER_H
+
+class BookManager
+{
+
+};
+
+#endif
