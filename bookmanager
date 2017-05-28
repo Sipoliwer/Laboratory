@@ -5,6 +5,198 @@ bookmanager
 0) Добавление новой книги
 копирующий 
 вектор с новой книги, все книги 1-го автора
+// Debug
+
+#include <iostream>
+#include <algorithm>
+#include <vector>
+#include <iterator>
+#include <cstring>
+#include <string>
+#include <random>
+#include <chrono>
+#include <functional>
+#include <thread>
+
+using namespace std;
+
+struct Book
+{
+	string title;
+	string author;
+	int year;
+};
+
+class BookManager
+{
+private: Book b;
+	     vector<string> buffer; // Вектор ввода
+		 string str;
+		 int year;
+		 vector<Book> vector_books; // Вектор с книгами
+		 vector<int> vector_year;
+		 vector<string> vector_author;
+		 vector<string> vector_title;
+public:
+	void InputBook()
+	{
+		int i = 0;
+		while (i!= 5)
+		{
+			cout << "Input Book: ";
+			cin >> b.title >> b.author >> b.year;
+			vector_books.push_back(b);
+			vector_year.push_back(b.year);
+			vector_author.push_back(b.author);
+			vector_title.push_back(b.title);
+			i++;
+		}
+		cout << endl;
+		for (int i = 0; i < vector_books.size(); i++)
+		{
+			cout << vector_books[i].title << " " << vector_books[i].author << " " << vector_books[i].year << endl;
+		}
+    }
+	void SearchTitle()
+	{
+		cout << "Input title for search: "; cin >> str;
+		for (int i = 0; i < vector_books.size(); i++)
+		{
+			if (vector_books[i].title == str)
+				cout << "Number of book: " << i << endl;
+		}
+	}
+	void SearchAuthor()
+	{
+		cout << "Input author for search: "; cin >> str;
+		for (int i = 0; i < vector_books.size(); i++)
+		{
+			if (vector_books[i].author == str)
+				cout << "Number of book: " << i << endl;
+		}
+	}
+	void SearchYear()
+	{
+		cout << "Input year for search: "; cin >> year;
+		for (int i = 0; i < vector_books.size(); i++)
+		{
+			if (vector_books[i].year == year)
+				cout << "Number of book: " << i << endl;
+		}
+	}
+	void SearchAll()
+	{
+		while (true)
+		{
+			cout << endl;
+			cout << "            MENU:          " << endl;
+			cout << "___________________________" << endl;
+			cout << " 1 - SearchTitle()" << endl;
+			cout << " 2 - SearchAuthor()" << endl;
+			cout << " 3 - SearchYear()" << endl;
+			cout << "___________________________" << endl;
+			cout << "Input number of operation: "; cin >> year;
+			if (year == 10)
+				break;
+			switch (year)
+			{
+			case 1:
+			{
+				SearchTitle();
+				this_thread::sleep_for(2s);
+				system("cls");
+				break;
+			}
+			case 2:
+			{
+				SearchAuthor();
+				this_thread::sleep_for(2s);
+				system("cls");
+				break;
+			}
+			case 3:
+			{
+				SearchYear();
+				this_thread::sleep_for(2s);
+				system("cls");
+				break;
+			}
+			default:
+			{
+				cout << "Input new operatiopn! " << endl;
+				this_thread::sleep_for(2s);
+				system("cls");
+				break;
+			}
+			}
+		}
+	}
+	void SortTitle()
+	{
+    		sort(vector_title.begin(), vector_title.end());
+			copy(vector_title.begin(), vector_title.end(), ostream_iterator<string>(cout, " "));
+			cout << endl;
+	}
+	void SortAuthor()
+	{
+		sort(vector_author.begin(), vector_author.end());
+		copy(vector_author.begin(), vector_author.end(), ostream_iterator<string>(cout, " "));
+		cout << endl;
+	}
+	void SortYear()
+	{
+		sort(vector_year.begin(), vector_year.end());
+		copy(vector_year.begin(), vector_year.end(), ostream_iterator<int>(cout, " "));
+		cout << endl;
+	}
+	void SortTitleInsert()
+	{
+		sort(vector_title.begin(), vector_title.end(),greater<string>());
+		copy(vector_title.begin(), vector_title.end(), ostream_iterator<string>(cout, " "));
+		cout << endl;
+	}
+	void SortAuthorInsert()
+	{
+		sort(vector_author.begin(), vector_author.end(), greater<string>());
+		copy(vector_author.begin(), vector_author.end(), ostream_iterator<string>(cout, " "));
+		cout << endl;
+	}
+	void SortYearInsert()
+	{
+		sort(vector_year.begin(), vector_year.end(), greater<int>());
+		copy(vector_year.begin(), vector_year.end(), ostream_iterator<int>(cout, " "));
+		cout << endl;
+	}
+	void SortAll()
+	{
+		SortTitle();
+		SortAuthor();
+		SortYear();
+	}
+	void SortInsert()
+	{
+		SortTitleInsert();
+		SortAuthorInsert();
+		SortYearInsert();
+	}
+};
+
+int main()
+{
+	Book b[6];
+	b[0] = { "Hello, world!", "Damiel Crown", 1997 };
+	b[1] = { "ABCD", "Damiel Crown", 2090 };
+	b[2] = { "Hela", "Acter Var", 1562 };
+	b[3] = { "OOP", "Bac Vard", 2739 };
+	b[4] = { "Z", "Zerd Falc", 1982 };
+	BookManager bm;
+	bm.InputBook();
+	bm.SortAll();
+	bm.SortInsert();
+	bm.SearchAll();
+	system("pause");
+	return 0;
+}
 
 // Testing Book
 #include <iostream>
