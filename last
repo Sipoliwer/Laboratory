@@ -1,0 +1,179 @@
+#include <iostream>
+#include <chrono>
+#include <thread>
+#include <vector>
+#include <array>
+#include <list>
+#include <string>
+#include <map>
+#include <set>
+#include <iterator>
+#include <deque>
+
+using namespace std;
+
+class Input
+{
+private: array<int, 100> a;
+		 vector<int> v;
+		 list<int> l;
+		 deque<int> d;
+
+		 typedef void(Input::*p)(); p pt;
+		 vector<int>::iterator it;
+		 deque<int>::iterator it_v;
+		 list<int>::iterator it_l;
+
+		 map<string, int> m;
+		 set<string> s;
+public:
+	void perekl()
+	{
+		cout << "array " << endl;
+		pt = &Input::input_array;
+		Time_of_function_input();
+		cout << "vector " << endl;
+		pt = &Input::input_vector;
+		Time_of_function_input();
+		cout << "list " << endl;
+		pt = &Input::input_list;
+		Time_of_function_input();
+		cout << "deque_input " << endl;
+		pt = &Input::input_deque;
+		Time_of_function_input();
+		cout << "insert_vector_begin " << endl;
+		pt = &Input::insert_vector_begin;
+		Time_of_function_input();
+		cout << "insert_vector_middle " << endl;
+		pt = &Input::insert_vector_middle;
+		Time_of_function_input();
+		cout << "insert_vector_end " << endl;
+		pt = &Input::insert_vector_end;
+		Time_of_function_input();
+		cout << "insert_deque_begin " << endl;
+		pt = &Input::insert_deque_begin;
+		Time_of_function_input();
+		cout << "insert_deque_middle " << endl;
+		pt = &Input::insert_deque_middle;
+		Time_of_function_input();
+		cout << "insert_deque_end " << endl;
+		pt = &Input::insert_deque_end;
+		Time_of_function_input();
+		cout << "insert_list_begin " << endl;
+		pt = &Input::insert_list_begin;
+		Time_of_function_input();
+		cout << "insert_list_middle " << endl;
+		pt = &Input::insert_list_middle;
+		Time_of_function_input();
+		cout << "insert_list_end " << endl;
+		pt = &Input::insert_list_end;
+		Time_of_function_input();
+	}
+	void input_deque()
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			d.push_back(i);
+		}
+	}
+	void input_array()
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			a[i] = i;
+		}
+	}
+	void input_vector()
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			v.push_back(i);
+		}
+	}
+	void input_list()
+	{
+		for (int i = 0; i < 100; i++)
+		{
+			l.push_back(i);
+		}
+	}
+
+	void insert_vector_begin()
+	{
+		v.resize(v.size() + 99);
+		it = v.begin();
+		v.insert(it, 10);
+	}
+	void insert_vector_middle()
+	{
+		v.resize(v.size() + 99);
+		it = v.begin() + 49;
+		v.insert(it, 10);
+	}
+	void insert_vector_end()
+	{
+		v.resize(v.size() + 99);
+		it = v.end();
+		v.insert(it, 10);
+	}
+	void insert_deque_begin()
+	{
+		d.resize(d.size() + 99);
+		it_v = d.begin();
+		d.insert(it_v, 10);
+	}
+	void insert_deque_middle()
+	{
+		d.resize(d.size() + 99);
+		it_v = d.begin() + 49;
+		d.insert(it_v, 10);
+	}
+	void insert_deque_end()
+	{
+		d.resize(d.size() + 99);
+		it_v = d.end();
+		d.insert(it_v, 10);
+	}
+	void insert_list_begin()
+	{
+		l.resize(l.size() + 99);
+		it_l = l.begin();
+		l.insert(it_l, 10);
+	}
+	void insert_list_middle()
+	{
+		l.resize(l.size() + 99);
+		it_l = l.begin();
+		for(int i = 0; i < 50; i++)
+		it_l++;
+		l.insert(it_l, 10);
+	}
+	void insert_list_end()
+	{
+		l.resize(l.size() + 99);
+		it_l = l.end();
+		l.insert(it_l, 10);
+	}
+	void push_front_deque()
+	{
+		d.pop_front();
+	}
+	void Time_of_function_input()
+	{
+		Input i;
+		chrono::time_point<chrono::system_clock> start, end;
+		start = chrono::system_clock::now();
+		(i.*pt)();
+		end = chrono::system_clock::now();
+		int elapsed_nanoseconds = chrono::duration_cast<chrono::nanoseconds> (end - start).count();
+		cout << "Elapsed time: " << elapsed_nanoseconds / 100 << " nanoseconds" << endl;
+	}
+};
+
+int main()
+{
+	Input i;
+	i.perekl();
+	system("pause");
+	return 0;
+}
