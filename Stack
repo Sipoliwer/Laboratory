@@ -1,0 +1,78 @@
+// Header.h
+
+#ifndef HEADER_H
+#define HEADER_H
+
+#include <vector>
+using namespace std;
+
+class Stack {
+private:
+	int _top;
+	vector<int>_stack;
+public:
+	Stack(int capacity) :_stack(capacity), _top(0) {}
+	bool pop(int &value);
+	bool push(int value);
+	void PUSH(int value, int i);
+	bool full();
+	bool empty();
+	void display();
+	int size();
+};
+
+#endif
+
+// Source.cpp
+
+#include "Header.h"
+#include <iostream>
+
+using namespace std;
+
+inline int Stack::size()
+{
+	return _top;
+}
+inline bool Stack::empty()
+{
+	return _top ? false : true;
+}
+inline bool Stack::full()
+{
+	return _top < _stack.size() ? false : true;
+}
+
+bool Stack::pop(int &top_value)
+{
+	if (empty())
+		return false;
+	top_value = _stack[--_top];
+	cout << "Stack::pop(): " << top_value << endl;
+	return true;
+}
+
+void Stack::PUSH(int value, int i)
+{
+	_stack[i] = value;
+}
+
+bool Stack::push(int value)
+{
+	cout << "Stack::push(" << value << ")\n";
+	if (full())
+	   return false;
+	_stack[_top++] = value;
+	return true;
+}
+
+void Stack::display()
+{
+	cout << endl;
+	cout << "(" << size() << ") " << endl;
+	cout << "(bot: ";
+	for (int ix = 0; ix < _top; ++ix)
+		cout << _stack[ix] << " ";
+	cout << " :top )\n";
+	cout << endl;
+}
