@@ -1,0 +1,235 @@
+// Header.h
+
+#ifndef STACK_H
+#define STAK_H
+
+#include <iostream>
+#include <vector>
+#include <stdexcept>
+#include <string>
+
+using namespace std;
+
+class stack
+{
+private:
+	vector<int> vec;
+	size_t size_stack;
+	size_t count;
+public:
+	stack()
+	{
+		size_stack = 10;
+		count = 0;
+	}
+	stack(size_t size_stack_)
+	{
+		size_stack = size_stack_;
+		count = 0;
+	}
+	void push(int x)
+	{
+		count++;
+		if (count > size_stack)
+		{
+			throw overflow_error("Wrong! Stack overflow!");
+		}
+		vec.push_back(x);
+	}
+	int pop()
+	{
+		if (count > 0) {
+			int c = vec[vec.size() - 1];
+			vec.pop_back();
+			count--;
+			return c;
+		}
+		else
+		{
+			throw underflow_error("Wrong! Stack underflow!");
+		}
+	}
+	int fetch() {
+		if (count > 0)
+		{
+			return vec.back();
+		}
+		else
+		{
+			throw underflow_error("Wrong! Stack underflow!");
+		}
+		return vec.back();
+	}
+	int size()
+	{
+		return count;
+	}
+};
+
+bool expect(string testname, bool result)
+{
+	cout << "Test: " << testname << ";";
+	if (result == true)
+		cout << " success" << endl;
+	else
+		cout << " fail" << endl;
+	return 0;
+};
+
+void test1()
+{
+	string name = "push 10/pop";
+	stack s;
+	int value = 10;
+	s.push(10);
+	int value_ = s.pop();
+	expect(name, value == value_);
+}
+
+void test2()
+{
+	stack s;
+	string name = "push / pop value = ";
+	for (int i = 0; i < 10; i++)
+	{
+		s.push(i);
+	}
+	for (int i = 9; i >= 0; i--)
+	{
+		string name_ = name + to_string(i);
+		expect(name_, s.pop() == i);
+	}
+}
+
+void test3()
+{
+	stack s;
+	string name = "push / fetch value = ";
+	bool result = false;
+	try {
+		for (int i = 0; i < 10; i++)
+		{
+			s.push(i);
+			string name_ = name + to_string(i);
+			expect(name_, s.fetch() == i);
+		}
+	}
+	catch (underflow_error&) {
+		result = true;
+		expect(name, result);
+	}
+}
+
+void test4()
+{
+	stack s;
+	string name = "check overflow exception";
+	bool result = false;
+	try
+	{
+		for (int i = 0; i < 11; i++)
+		{
+			s.push(i);
+		}
+	}
+	catch (overflow_error&)
+	{
+		result = true;
+	}
+	expect(name, result);
+}
+
+void test5()
+{
+	stack s;
+	string name = "check underflow exception";
+	bool result = false;
+	try
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			s.push(i);
+		}
+		for (int i = 0; i < 11; i++)
+		{
+			s.pop();
+		}
+	}
+	catch (underflow_error&)
+	{
+		result = true;
+	}
+	expect(name, result);
+}
+
+void test6(int size_)
+{
+	string name = "test size with ++";
+	stack s;
+	for (int i = 0; i < size_; i++)
+	{
+		s.push(i);
+	}
+	expect(name, s.size() == size_);
+}
+
+void test7() {
+	string name = "test fetch underflow";
+	stack s;
+	bool result = false;
+	try {
+		s.fetch();
+	}
+	catch (underflow_error&) {
+		result = true;
+	}
+	expect(name, result);
+}
+
+void test8(int size_)
+{
+	string name = "test size with --";
+	stack s;
+	for (int i = 0; i < size_; i++)
+	{
+		s.push(i);
+	}
+	for (int i = 0; i < size_; i++)
+	{
+		s.pop();
+	}
+	expect(name, s.size() == 0);
+}
+
+void test9(int size_)
+{
+	string name = "test size whith empty stack";
+	stack s;
+	expect(name, s.size() == 0);
+}
+
+void startTests(int size_stack_)
+{
+	test1();
+	test2();
+	test3();
+	test4();
+	test5();
+	test6(size_stack_);
+	test7();
+	test8(size_stack_);
+	test9(size_stack_);
+}
+
+#endif
+
+// main.cpp
+
+#include "Header.h"
+
+int main()
+{
+	startTests(10);
+	system("pause");
+	return 0;
+}
