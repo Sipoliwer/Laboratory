@@ -5,7 +5,26 @@
 using namespace std;
 
 enum clas
+{
+fi,
+se,
+th,
+fo,
+fi
+};
 
+static const char* strings[]=
+{
+"fi",
+"se",
+"th",
+"fo",
+"fi"
+}
+
+template <typename ... Types> void (Types ... args)
+get<0>(tuple);
+tuple<string, int> tuple ("Name", 2);
 int main()
 {
 return 0;
