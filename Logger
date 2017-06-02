@@ -1,1 +1,58 @@
+#include <iostream>
+#include <string>
 
+using namespace std;
+
+class Logger
+{
+	friend class logg;
+	int complexity;
+public:
+	Logger(int complexity) : complexity(complexity) {};
+};
+
+class logg
+{
+protected: int complexity_operation;
+		   logg * next;
+public: 
+	logg(int complexity_operation) : complexity_operation(complexity_operation) {}
+
+	virtual ~logg()
+	{
+		if (next)
+			delete next;
+	}
+
+	logg * setNext(logg * log)
+	{
+		next = log;
+		return log;
+	}
+	virtual void write(int) {};
+};
+
+class write_in_console : public logg
+{
+protected:
+	int complexity;
+	void write(int complexity)
+	{
+		if (complexity_operation >= complexity)
+		{
+			cout << "Nice operation! " << endl;
+		}
+	}
+public: 
+	write_in_console(int complexity_operation) : logg(complexity_operation) { cout << "Input complexity: "; cin >> complexity; write(complexity); }
+};
+
+
+int main()
+{
+	logg* logg = new write_in_console(1);
+	logg->setNext(new write_in_console(3))
+	 ->setNext(new write_in_console(10));
+	system("pause");
+	return 0;
+}
