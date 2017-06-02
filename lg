@@ -1,0 +1,186 @@
+// Loger.h
+
+#pragma once
+#include "LogLevel.h"
+#include <iostream>
+#include <fstream>
+#include <chrono>
+#include <string>
+
+class Logger {
+protected:
+	virtual void write_message(std::string msg) {};
+	virtual void exec(std::string msg) {};
+	LogLevel logMask;
+	Logger *next;
+public:
+	Logger(LogLevel);
+	virtual ~Logger();
+	void set_next(Logger*);
+	void message(std::string, LogLevel);
+};
+
+
+
+class File_Logger : public Logger {
+protected:
+	void exec(std::string msg);
+	void write_message(std::string msg);
+public:
+	File_Logger(LogLevel mask);
+};
+
+
+
+class Email_Logger : public Logger {
+protected:
+	void exec(std::string msg);
+	void write_message(std::string msg);
+public:
+	Email_Logger(LogLevel mask);
+};
+
+
+
+class Console_Logger : public Logger {
+protected:
+	void exec(std::string msg);
+	void write_message(std::string);
+public:
+	Console_Logger(LogLevel);
+};
+
+// LogLevel.h
+
+#pragma once
+
+enum LogLevel {
+	None = 0,
+	Info = 1,
+	Debug = 2,
+	Warning = 4,
+	Error = 8,
+};
+
+// Logger.cpp
+
+#include "Logger.h"
+
+Logger::Logger(LogLevel mask) {
+	logMask = mask;
+}
+
+inline Logger::~Logger() {
+	if (next) {
+		delete next;
+	}
+};
+
+void Logger::message(std::string msg, LogLevel severity) {
+	if ((int)severity <= (int)logMask) {
+		this->write_message(msg);
+		this->exec(msg);
+	}
+	if (next != nullptr) {
+		next->message(msg, severity);
+	}
+	else if ((int)severity > (int)logMask) {
+		std::cout << "none responsible loggers to exec!" << std::endl;
+	}
+};
+
+void Logger::set_next(Logger *nextlogger) {
+	next = nextlogger;
+}
+
+
+
+
+File_Logger::File_Logger(LogLevel mask)
+	: Logger(mask)
+{};
+
+inline void File_Logger::exec(std::string msg) {
+	auto time_stamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	std::ofstream fon;
+	const std::string fl_name = "C:/Users/Mike/file_log.txt";
+	fon.open(fl_name, std::ios_base::app);
+	char str[26];
+	ctime_s(str, sizeof str, &time_stamp);
+	fon << (msg + " ") << str << "\n";
+	fon.close();
+}
+
+void File_Logger::write_message(std::string msg) {
+	std::cout << ("Writing to Log File: " + msg) << std::endl;
+}
+
+
+
+Email_Logger::Email_Logger(LogLevel mask)
+	: Logger(mask)
+{};
+
+inline void Email_Logger::exec(std::string msg) {
+	auto time_stamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	std::ofstream fon;
+	const std::string fl_name = "C:/Users/Mike/file_config.txt";
+	fon.open(fl_name, std::ios_base::app);
+	char str[26];
+	ctime_s(str, sizeof str, &time_stamp);
+	fon << ("email with massage " + msg + " was sent at ") << str << "\n";
+	fon.close();
+}
+
+void Email_Logger::write_message(std::string msg) {
+	std::cout << ("Sending via email: " + msg) << std::endl;
+};
+
+
+
+Console_Logger::Console_Logger(LogLevel mask)
+	: Logger(mask)
+{};
+
+
+inline void Console_Logger::exec(std::string msg) {
+	auto time_stamp = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+	char str[26];
+	ctime_s(str, sizeof str, &time_stamp);
+	std::cout << msg << " msg time: " << str << std::endl;
+}
+
+void Console_Logger::write_message(std::string msg) {
+	std::cout << "Writing to console: " << std::endl;
+}
+
+// Source.cpp
+
+#include "Logger.h"
+
+int main() {
+	Logger *logger = new Console_Logger(LogLevel::Info);
+	Logger *logger1 = new Email_Logger(LogLevel::Debug);
+	Logger *logger2 = new File_Logger(LogLevel::Warning);
+	logger->set_next((Logger*)logger1);
+	logger1->set_next((Logger*)logger2);
+
+	// Handled by all
+	logger->message("programm has been started", LogLevel::None);
+
+	// Handled by logger
+	logger->message("Implicit type conversion at line: 1485", LogLevel::Warning);
+
+	// Handled by logger and logger1
+	logger->message("Unsafe using of function ", LogLevel::Debug);
+	// Handled by all
+	logger->message("information mes ", LogLevel::Info);
+
+	// Handled by none
+	logger->message("expected ; line: 4567", LogLevel::Error);
+
+	// Handled by logger
+	logger->message("some warning", LogLevel::Warning);
+	std::cin.get();
+	return 0;
+}
