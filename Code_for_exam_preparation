@@ -1,0 +1,287 @@
+#include <iostream>
+#include <fstream>
+#include <regex>
+#include <string>
+#include <tuple>
+using namespace std;
+
+class A 
+{
+private: int const a, b;
+public: A(int a, int b) : a(a), b(b) {};
+		void see() { cout << a << b << endl; };
+};
+
+//Переменное число параметров
+void kek(int num, int first, ...)
+{
+	int * ptr = &first;
+	while (num--)
+	{
+		cout << *ptr << endl;
+		ptr++;
+	}
+}
+
+std::tuple<double, char, std::string> get_student(int id)
+{
+	if (id == 0) return std::make_tuple(3.8, 'A', "Lisa Simpson");
+	if (id == 1) return std::make_tuple(2.9, 'C', "Milhouse Van Houten");
+	if (id == 2) return std::make_tuple(1.7, 'D', "Ralph Wiggum");
+	throw std::invalid_argument("id");
+}
+
+void print()
+{
+}
+
+template <typename E, typename... Types>
+void print(const E Arg, const Types&... args) {
+	cout << Arg << endl;
+	print(args...);
+}
+
+int main() 
+{
+{
+		this_thread::sleep_for(chrono::seconds(3));
+		int mas[10] = { 1,10,3,5,4,3,2,2,5,6 };
+		vector<int> v(mas, mas + 10);
+		vector<int>::reverse_iterator itr_v = v.rbegin();
+		for (; itr_v != v.rend(); itr_v++)
+		{
+			cout << *itr_v << endl;
+		}
+		cout << "===================================" << endl;
+		copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+		fill_n(inserter(v, v.begin()), 3, -1);
+		copy(v.begin(), v.end(), ostream_iterator<int>(cout, " "));
+		cout << endl;
+		set<int> s;
+		set<int>::iterator i;
+		s.insert(mas, mas + 10);
+		copy(s.begin(),s.end(), ostream_iterator<int> (cout, " "));
+		cout << s.count(12) << endl;
+		s.erase(s.begin(), s.end());
+		copy(s.begin(), s.end(), ostream_iterator<int>(cout, " "));
+		cout << endl;
+		while (!s.empty())
+		{
+			s.erase(s.begin());
+		}
+		cout << endl;
+	}
+
+	{
+		int mas[10] = { 1,10,3,5,4,3,2,2,5,6 };
+		
+		pair<int, double> p[10];
+		p[0] = make_pair(10, 28.8);
+		p[1] = make_pair(11, 21.8);
+		p[2] = make_pair(12, 27.8);
+		p[3] = make_pair(13, 26.8);
+		p[4] = make_pair(14, 24.8);
+
+		pair<int, double> a[5] =
+		{
+			pair<int, double>(20 ,1.5),
+			pair<int, double>(19 ,2.5),
+			pair<int, double>(22 ,3.5),
+			pair<int, double>(15 ,4.5),
+			pair<int, double>(24 ,5.5)
+		};
+		map<int, double> m(a, a + 5);
+		map<int, double>::iterator it = m.begin();
+		map<int, double> * pm = &m;
+		for (int i = 0; i < m.size(); i++)
+		{
+			cout << (*(*pm).begin()).first << endl;
+		}
+		for (; it != m.end(); it++)
+		{
+			cout << (*it).first << endl;
+			cout << (*it).second << endl;
+		}
+		cout << endl;
+		{
+			pair<string, int> a[3] =
+			{
+				pair<string, int>("lol", 2),
+				pair<string, int>("kek", 9),
+				pair<string, int>("cheburek", 1)
+			};
+			map<string, int> ma(a, a + 3);
+			map<string, int>::iterator itr = ma.begin();
+			cout << "--------------------------------" << endl;
+			cout << ma["lol"] << endl;
+			for (; itr != ma.end(); itr++)
+			{
+				cout << (*itr).first << endl;
+				cout << (*itr).second << endl;
+			}
+		}
+    // Лямбда-функции
+#if 0
+	{
+		int i, n;
+		cout << [](int a) { return [](int b) { return b + 3; } (a) + 4; }(5) << endl;
+		int a = 1;
+		int b = 10;
+		auto em = [i, &n] { return n + i; };
+	}
+    class Matrix
+{
+private: int massiv[5];
+public:
+	friend ostream &operator << (ostream & cout, Matrix & temp);
+
+	void input()
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			massiv[i] = i;
+		}
+	}
+	Matrix operator+(const Matrix & rhs)
+	{
+		Matrix result(*this);
+		for (int i = 0; i < 5; i++)
+		{
+			result.massiv[i] += rhs.massiv[i];
+		}
+		return result;
+	}
+};
+//==========================================================
+void kekstructor(initializer_list<int> list)
+{
+	int lc;
+	lc = *list.begin() + *(list.begin() + 1);
+	cout << lc << endl;
+}
+{
+		vector<int> v;
+		int m[] = {1,4,5,3,7,4,8};
+		v = {1,2,5};
+		int sum = 0;
+		sort(m, m + 7, greater<int>());
+		copy(m, m + 7, ostream_iterator<int>(cout," "));
+		cout << endl;
+		sum = accumulate(m, m+3, sum);
+		sum = accumulate(v.begin(),v.end(),1);
+		cout << sum;
+		chrono::time_point<chrono::system_clock> start, end;
+		start = chrono::system_clock::now();
+		pod(10, 9);
+		cout << endl;
+		end = chrono::system_clock::now();
+		int times = chrono::system_clock::to_time_t(start);
+		cout << times << endl;
+		times = chrono::system_clock::to_time_t(end);
+		cout << times << endl;
+		mutex mut;
+		mut.lock();
+		cout << "GG" << endl;
+		mut.unlock();
+		// Списки инициализации
+		struct inr
+		{
+			int a;
+			int s;
+		};
+		inr l;
+		kekstructor({1,2,1,2,4,5,6,9});
+	}
+
+//REGEX
+#if 0
+	{
+		string str = "email";
+		cmatch result;
+		regex regular("([\\w]+)");
+
+		if (regex_match(str.c_str(), result, regular))
+			cout << "true\n";
+
+		for (int i = 0; i < result.size(); i++)
+			cout << result[i] << endl;
+	}
+#endif
+//TUPLE
+#if 0
+	{
+		auto student0 = get_student(0);
+		std::cout << "ID: 0, "
+			<< "GPA: " << std::get<0>(student0) << ", "
+			<< "grade: " << std::get<1>(student0) << ", "
+			<< "name: " << std::get<2>(student0) << '\n';
+
+		double gpa1;
+		char grade1;
+		std::string name1;
+		std::tie(gpa1, grade1, name1) = get_student(1);
+		std::cout << "ID: 1, "
+			<< "GPA: " << gpa1 << ", "
+			<< "grade: " << grade1 << ", "
+			<< "name: " << name1 << '\n';
+
+		auto t1 = std::make_tuple(10, "Test", 3.14);
+		std::cout << "The value of t1 is "
+			<< "(" << std::get<0>(t1) << ", " << std::get<1>(t1)
+			<< ", " << std::get<2>(t1) << ")\n";
+
+		int n = 1;
+		auto t2 = std::make_tuple(std::ref(n), n);
+		n = 7;
+		std::cout << "The value of t2 is "
+			<< "(" << std::get<0>(t2) << ", " << std::get<1>(t2) << ")\n";
+	//Output: The value of t1 is (10, Test, 3.14)
+    //The value of t2 is(7, 1)
+	}
+#endif
+//ВАРИАТИВНЫЕ ШАБЛОНЫ
+#if 1
+	{
+		print(5, "ewfw", 4);
+		ofstream fout("file.txt");
+		fout << "kek" << endl;
+		fout.close();
+	}
+#endif
+#if 0
+	{//CHRONO
+		//ratio - класс обыкновенной дроби (m / n)
+		ratio<1, 10> r;
+		cout << r.num << r.den << endl;
+		{
+			using seconds = chrono::duration<long long>;
+			using minutes = chrono::duration<int, ratio<60>>;
+			//seconds s(10);
+			seconds time1 = 20s;
+			minutes time2 = 30min;
+		}
+		//chrono::duration
+		//time_point
+		chrono::time_point<chrono::system_clock> start, end;
+		start = chrono::system_clock::now();
+		static int kek = 190 + 290393;
+		end = chrono::system_clock::now();
+		auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+		cout << elapsed << endl;
+	}
+#endif
+#if 0
+	{//MUTEX
+		thread th1(sample, 'c');
+		thread th2(sample, 'a');
+		if (th1.joinable() && th2.joinable())
+		{
+			th1.join();
+			th2.join();
+		}
+	}
+#endif
+	//kek(3, 1, 2, 3);
+	system("pause");
+	return 0;
+}
