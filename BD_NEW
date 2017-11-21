@@ -1,0 +1,524 @@
+Imports System.Data
+Imports System.Data.SqlClient
+Imports System.Math
+Imports System.IO
+Imports System.Data.OleDb
+Imports System.Data.Odbc
+Imports System
+<System.Runtime.InteropServices.ComVisible(False)> Public Class Form1
+    Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click
+        'ПОДКЛЮЧИТЬСЯ К БД взять запросом данные
+        Dim I As Integer
+        Dim SQL_ As String
+        SQL_ = "SELECT     ID, Ф, И, О, NUM, Адрес, mail, тел, Увлечения, ДР, М, Memo FROM         dbo.LIST WHERE     (М = 1)"
+        Dim CONNECTION_STR_ As String
+        CONNECTION_STR_ = "Persist Security Info=True; database=15ПМИ; server=DNS-VB\BCT5422;; uid=111; pwd=11111; Connect Timeout=30"
+        Dim cn As New SqlConnection(CONNECTION_STR_)
+        Dim da_ADRESS As New SqlDataAdapter  'датаадптер для загрузки информации относительно таблицы в ds
+        Dim row_ADRESS As Integer
+        Dim ds_ADRESS As New DataSet
+        '**********
+        da_ADRESS.SelectCommand = New SqlCommand
+        da_ADRESS.SelectCommand.Connection = cn
+        da_ADRESS.SelectCommand.CommandType = CommandType.Text
+        da_ADRESS.SelectCommand.CommandText = SQL_
+        '**********************************************
+        da_ADRESS.TableMappings.Add("Table", "ADRESS")
+        '*********************************
+        ' Load Data
+        row_ADRESS = da_ADRESS.Fill(ds_ADRESS)
+        '****************
+        DataGridView1.DataSource = ds_ADRESS
+        '**********************
+        DataGridView1.DataMember = "ADRESS"
+        '**************************
+        'обработать взятые данные
+        Dim VAR_1 As String
+        Dim VAR_2 As String
+        For I = 0 To row_ADRESS - 1
+            VAR_1 = ds_ADRESS.Tables("ADRESS").Rows(I).Item("Ф")
+            ' обработка символьной информации
+            Dim G As String
+            Dim Tst(110) As String
+            Dim Tst_(110) As String
+            Dim II As Integer
+            Dim JJ As Integer
+            G = VAR_1
+            For JJ = 0 To 110
+                Tst(JJ) = "" 'Обнулили весь массив
+                Tst_(JJ) = "" 'Обнулили весь массив
+            Next JJ
+            II = Len(G) 'ЧИСЛО ЗНАКОВ В БТС
+            For JJ = 1 To II
+                Tst(JJ) = Mid(G, JJ, 1) 'Нашинковали строчки по символам
+            Next JJ
+            VAR_2 = ""
+            For JJ = 1 To II
+                VAR_2 = VAR_2 & Tst(JJ)
+            Next JJ
+            VAR_2 = VAR_2 & "*"
+
+            ds_ADRESS.Tables("ADRESS").Rows(I).Item("Ф") = VAR_2
+        Next I
+        ' Часть 3 сохранение данных в БД
+
+        '********************SQL
+        Dim daCustomers As New SqlDataAdapter(SQL_, cn)
+        '*****************************************************
+        'создали новый датаадаптер для осуществления операции обновления
+        Dim cbCustomers As New SqlCommandBuilder(daCustomers)
+        ' используется для построения команд СКЛ
+        Try 'внесение изменений в правильном порядке открыли
+            Dim ChangedTable As New DataTable
+            'таблица в которую пишутся изменение
+            ChangedTable = ds_ADRESS.Tables("ADRESS").GetChanges
+            '*********************************
+            'ds-объект датасет из которого берутся данные Общий для всех кнопок
+            If Not ChangedTable Is Nothing Then
+                daCustomers.Update(ChangedTable)
+            End If
+        Catch ex As Exception 'если исключительная ситуация то стреляет сообщение
+            MessageBox.Show(ex.Message)
+        End Try
+
+
+    End Sub
+
+    Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+
+
+    End Sub
+
+    Private Sub Button2_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        Dim A As Double
+        Dim b As Double
+        A = 3.14 / 2
+        b = Sin(A)
+    End Sub
+
+    Private Sub Button2_Click_1(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    End Sub
+
+    Private Sub Button2_Click_2(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+        '*************************************ДЕМОНСТРАЦИЯ
+
+        Dim I As Integer
+
+        Dim da_ADRESS As New SqlDataAdapter  'датаадптер для загрузки информации относительно таблицы в ds
+        Dim row_ADRESS As Integer
+        Dim ds_ADRESS As New DataSet
+        Dim cn As New SqlConnection("Persist Security Info=True; database=N_Novgorod; server=DNS-VB\BCT5422;; uid=student_hse;pwd=student;Connect Timeout=30")
+        '**********
+        da_ADRESS.SelectCommand = New SqlCommand
+        da_ADRESS.SelectCommand.Connection = cn
+        da_ADRESS.SelectCommand.CommandType = CommandType.Text
+        da_ADRESS.SelectCommand.CommandText = "SELECT     dbo.БТС_СИМВ.*  FROM         dbo.БТС_СИМВ"
+        '**********************************************
+        da_ADRESS.TableMappings.Add("Table", "ADRESS")
+        '*********************************
+        ' Load Data
+        row_ADRESS = da_ADRESS.Fill(ds_ADRESS)
+        '****************
+        DataGridView1.DataSource = ds_ADRESS
+        '**********************
+        DataGridView1.DataMember = "ADRESS"
+        '**************************
+
+    End Sub
+
+    Private Sub Button3_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    End Sub
+
+    Private Sub Button4_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+
+
+    End Sub
+
+    Private Sub Button2_Click_3(ByVal sender As System.Object, ByVal e As System.EventArgs)
+        Dim I As Integer
+
+        Dim K As Integer
+        Dim S As Single
+        Dim J As Integer
+
+        S = 0
+
+        For I = 0 To 8 '13
+
+            For J = 0 To 6 '17
+
+                For K = 1 To 4 '29
+                    S = 13 * I + 17 * J + 29 * K
+                    If S = 100 Then MessageBox.Show("I=" & I & " J=" & J & " K=" & K)
+                    'If S = 100 Then MessageBox.Show("OK")
+                Next K
+
+            Next J
+        Next I
+
+    End Sub
+
+    Private Sub Button2_Click_4(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+
+
+    End Sub
+
+    Private Sub Button5_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+
+    End Sub
+
+    Private Sub Button5_MarginChanged(ByVal sender As Object, ByVal e As System.EventArgs)
+
+    End Sub
+
+    Private Sub Button6_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button6.Click
+        'ПОДКЛЮЧИТЬСЯ К БД
+        Dim I As Integer
+        Dim SQL_ As String
+        SQL_ = "SELECT     TOP (100) PERCENT ID, Ф, И, О, NUM, Адрес, mail, Увлечения, тел, ДР, М, Memo FROM         dbo.LIST ORDER BY ID"
+        Dim CONNECTION_STR_ As String
+        CONNECTION_STR_ = "Persist Security Info=True; database=15ПМИ; server=DNS-VB\BCT5422;; uid=111; pwd=11111; Connect Timeout=30"
+
+        Dim cn As New SqlConnection(CONNECTION_STR_)
+        Dim da_ADRESS As New SqlDataAdapter  'датаадптер для загрузки информации относительно таблицы в ds
+        Dim row_ADRESS As Integer
+        Dim ds_ADRESS As New DataSet
+        '**********
+        da_ADRESS.SelectCommand = New SqlCommand
+        da_ADRESS.SelectCommand.Connection = cn
+        da_ADRESS.SelectCommand.CommandType = CommandType.Text
+        da_ADRESS.SelectCommand.CommandText = SQL_
+        '********************** 
+        da_ADRESS.TableMappings.Add("Table", "ADRESS")
+        '*********************************
+        ' Load Data
+        row_ADRESS = da_ADRESS.Fill(ds_ADRESS)
+        '****************
+        DataGridView1.DataSource = ds_ADRESS
+        '**********************
+        DataGridView1.DataMember = "ADRESS"
+        '**************************
+        Dim ID_ As Integer
+        ID_ = ds_ADRESS.Tables("ADRESS").Rows(row_ADRESS - 1).Item("ID")
+        ID_ = ID_ + 1
+
+        Dim row_ID As DataRow
+        row_ID = ds_ADRESS.Tables("ADRESS").NewRow
+        row_ID("ID") = ID_
+        row_ID("Ф") = "Панкратова"
+        row_ID("И") = "Анастасия"
+        row_ID("О") = "Евгеньевна"
+        row_ID("NUM") = "356788"
+        row_ID("Адрес") = "Сочи"
+        ds_ADRESS.Tables("ADRESS").Rows.Add(row_ID)
+
+
+
+        '********************SQL
+        Dim daCustomers As New SqlDataAdapter(SQL_, cn)
+        '*****************************************************
+        'создали новый датаадаптер для осуществления операции обновления
+        Dim cbCustomers As New SqlCommandBuilder(daCustomers)
+        ' используется для построения команд СКЛ
+        Try 'внесение изменений в правильном порядке открыли
+            Dim ChangedTable As New DataTable
+            'таблица в которую пишутся изменение
+            ChangedTable = ds_ADRESS.Tables("ADRESS").GetChanges
+            '*********************************
+            'ds-объект датасет из которого берутся данные Общий для всех кнопок
+            If Not ChangedTable Is Nothing Then
+                daCustomers.Update(ChangedTable)
+            End If
+        Catch ex As Exception 'если исключительная ситуация то стреляет сообщение
+            MessageBox.Show(ex.Message)
+        End Try
+
+
+    End Sub
+
+    Private Sub Button7_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button7.Click
+        'ПОДКЛЮЧИТЬСЯ К БД
+        Dim I As Integer
+        Dim SQL_ As String
+        SQL_ = "SELECT     TOP (100) PERCENT ID, FK_ID, Дата_заказа, Название, Цена, Количество, Memo_  FROM         dbo.Заказы ORDER BY ID"
+        Dim CONNECTION_STR_ As String
+        CONNECTION_STR_ = "Persist Security Info=True; database=15ПМИ; server=DNS-VB\BCT5422;; uid=111; pwd=11111; Connect Timeout=30"
+
+        Dim cn As New SqlConnection(CONNECTION_STR_)
+        Dim da_ADRESS As New SqlDataAdapter  'датаадптер для загрузки информации относительно таблицы в ds
+        Dim row_ADRESS As Integer
+        Dim ds_ADRESS As New DataSet
+        '**********
+        da_ADRESS.SelectCommand = New SqlCommand
+        da_ADRESS.SelectCommand.Connection = cn
+        da_ADRESS.SelectCommand.CommandType = CommandType.Text
+        da_ADRESS.SelectCommand.CommandText = SQL_
+        '********************** 
+        da_ADRESS.TableMappings.Add("Table", "ADRESS")
+        '*********************************
+        ' Load Data
+        row_ADRESS = da_ADRESS.Fill(ds_ADRESS)
+        '****************
+        DataGridView1.DataSource = ds_ADRESS
+        '**********************
+        DataGridView1.DataMember = "ADRESS"
+        '**************************
+        'GoTo a
+        Dim ID_ As Integer
+        ID_ = ds_ADRESS.Tables("ADRESS").Rows(row_ADRESS - 1).Item("ID")
+        ID_ = ID_ + 1
+
+        Dim row_ID As DataRow
+
+        row_ID = ds_ADRESS.Tables("ADRESS").NewRow
+
+        row_ID("ID") = ID_
+        row_ID("FK_ID") = "4"
+        row_ID("Дата_заказа") = "09.03.2017"
+        row_ID("Название") = "Грибная"
+        row_ID("Цена") = "355"
+        row_ID("Количество") = "23456"
+
+
+        ds_ADRESS.Tables("ADRESS").Rows.Add(row_ID)
+
+        '********************SQL
+        Dim daCustomers As New SqlDataAdapter(SQL_, cn)
+        '*****************************************************
+        'создали новый датаадаптер для осуществления операции обновления
+        Dim cbCustomers As New SqlCommandBuilder(daCustomers)
+        ' используется для построения команд СКЛ
+        Try 'внесение изменений в правильном порядке открыли
+            Dim ChangedTable As New DataTable
+            'таблица в которую пишутся изменение
+            ChangedTable = ds_ADRESS.Tables("ADRESS").GetChanges
+            '*********************************
+            'ds-объект датасет из которого берутся данные Общий для всех кнопок
+            If Not ChangedTable Is Nothing Then
+                daCustomers.Update(ChangedTable)
+            End If
+        Catch ex As Exception 'если исключительная ситуация то стреляет сообщение
+            MessageBox.Show(ex.Message)
+        End Try
+a:
+    End Sub
+
+    Private Sub Button8_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button8.Click
+        Dim RND_ As Double
+        Dim I As Integer
+        For I = 0 To 100
+            RND_ = Rnd()
+        Next I
+
+
+
+
+    End Sub
+
+    Private Sub Button9_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button9.Click
+        'ПОДКЛЮЧИТЬСЯ К БД
+        Dim I As Integer
+        Dim SQL_ As String
+        SQL_ = "SELECT     ID, RND_, Memo_ FROM         dbo.STATIST_"
+        Dim CONNECTION_STR_ As String
+        CONNECTION_STR_ = "Persist Security Info=True; database=15ПИ; server=DNS-VB\BCT5422;; uid=111; pwd=11111; Connect Timeout=30"
+        Dim cn As New SqlConnection(CONNECTION_STR_)
+        Dim da_ADRESS As New SqlDataAdapter  'датаадптер для загрузки информации относительно таблицы в ds
+        Dim row_ADRESS As Integer
+        Dim ds_ADRESS As New DataSet
+        '**********
+        da_ADRESS.SelectCommand = New SqlCommand
+        da_ADRESS.SelectCommand.Connection = cn
+        da_ADRESS.SelectCommand.CommandType = CommandType.Text
+        da_ADRESS.SelectCommand.CommandText = SQL_
+        '**********************************************
+        da_ADRESS.TableMappings.Add("Table", "ADRESS")
+        '*********************************
+        ' Load Data
+        row_ADRESS = da_ADRESS.Fill(ds_ADRESS)
+        '****************
+        DataGridView1.DataSource = ds_ADRESS
+        '**********************
+        DataGridView1.DataMember = "ADRESS"
+        '**************************
+        Dim RND_ As Double
+        For I = 1 To 100
+            ds_ADRESS.Tables("ADRESS").Rows.Add()
+            RND_ = Rnd()
+
+            ds_ADRESS.Tables("ADRESS").Rows(row_ADRESS - 1 + I).Item("ID") = I
+            ds_ADRESS.Tables("ADRESS").Rows(row_ADRESS - 1 + I).Item("RND_") = RND_
+        Next I
+
+        '********************SQL
+        Dim daCustomers As New SqlDataAdapter(SQL_, cn)
+        '*****************************************************
+        'создали новый датаадаптер для осуществления операции обновления
+        Dim cbCustomers As New SqlCommandBuilder(daCustomers)
+        ' используется для построения команд СКЛ
+        Try 'внесение изменений в правильном порядке открыли
+            Dim ChangedTable As New DataTable
+            'таблица в которую пишутся изменение
+            ChangedTable = ds_ADRESS.Tables("ADRESS").GetChanges
+            '*********************************
+            'ds-объект датасет из которого берутся данные Общий для всех кнопок
+            If Not ChangedTable Is Nothing Then
+                daCustomers.Update(ChangedTable)
+            End If
+        Catch ex As Exception 'если исключительная ситуация то стреляет сообщение
+            MessageBox.Show(ex.Message)
+        End Try
+
+    End Sub
+
+    Private Sub Button10_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    End Sub
+
+    Private Sub Button11_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    End Sub
+
+    Private Sub Button12_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    End Sub
+
+    Private Sub Button13_Click(ByVal sender As System.Object, ByVal e As System.EventArgs)
+
+    End Sub
+
+    Private Sub Button2_Click_5(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button2.Click
+        'ПОДКЛЮЧИТЬСЯ К БД
+        Dim I As Integer
+        Dim SQL_ As String
+        SQL_ = "SELECT     TOP (100) PERCENT ID, Ф, И, О, NUM, Адрес, mail, Увлечения, тел, ДР, М, Memo FROM         dbo.LIST ORDER BY ID"
+        Dim CONNECTION_STR_ As String
+        CONNECTION_STR_ = "Persist Security Info=True; database=15ПМИ; server=DNS-VB\BCT5422;; uid=111; pwd=11111; Connect Timeout=30"
+
+        Dim cn As New SqlConnection(CONNECTION_STR_)
+        Dim da_PARENTS As New SqlDataAdapter  'датаадптер для загрузки информации относительно таблицы в ds
+        Dim row_PARENTS As Integer
+        Dim ds_PARENTS As New DataSet
+        '**********
+        da_PARENTS.SelectCommand = New SqlCommand
+        da_PARENTS.SelectCommand.Connection = cn
+        da_PARENTS.SelectCommand.CommandType = CommandType.Text
+        da_PARENTS.SelectCommand.CommandText = SQL_
+        '********************** 
+        da_PARENTS.TableMappings.Add("Table", "PARENTS")
+        '*********************************
+        ' Load Data
+        row_PARENTS = da_PARENTS.Fill(ds_PARENTS)
+        '****************
+        DataGridView1.DataSource = ds_PARENTS
+        '**********************
+        DataGridView1.DataMember = "PARENTS"
+        '**************************
+        Dim ID_ As Integer
+        ID_ = ds_PARENTS.Tables("PARENTS").Rows(row_PARENTS - 1).Item("ID")
+        ID_ = ID_ + 1
+
+        Dim row_ID As DataRow
+        row_ID = ds_PARENTS.Tables("PARENTS").NewRow
+        row_ID("ID") = ID_
+        row_ID("Ф") = "Панкратова"
+        row_ID("И") = "Анастасия"
+        row_ID("О") = "Евгеньевна"
+        row_ID("NUM") = "356788"
+        row_ID("Адрес") = "Сочи"
+        ds_PARENTS.Tables("PARENTS").Rows.Add(row_ID)
+
+
+        '********************SQL
+        Dim daCustomers As New SqlDataAdapter(SQL_, cn)
+        '*****************************************************
+        'создали новый датаадаптер для осуществления операции обновления
+        Dim cbCustomers As New SqlCommandBuilder(daCustomers)
+        ' используется для построения команд СКЛ
+        Try 'внесение изменений в правильном порядке открыли
+            Dim ChangedTable As New DataTable
+            'таблица в которую пишутся изменение
+            ChangedTable = ds_PARENTS.Tables("PARENTS").GetChanges
+            '*********************************
+            'ds-объект датасет из которого берутся данные Общий для всех кнопок
+            If Not ChangedTable Is Nothing Then
+                daCustomers.Update(ChangedTable)
+            End If
+        Catch ex As Exception 'если исключительная ситуация то стреляет сообщение
+            MessageBox.Show(ex.Message)
+        End Try
+        '  GoTo a
+        'ПОДКЛЮЧИТЬСЯ К БД
+        '   Dim I As Integer
+        '  Dim SQL_ As String
+        SQL_ = "SELECT     TOP (100) PERCENT ID, FK_ID, Дата_заказа, Название, Цена, Количество, Memo_  FROM         dbo.Заказы ORDER BY ID"
+        ' Dim CONNECTION_STR_ As String
+        'CONNECTION_STR_ = "Persist Security Info=True; database=15ПМИ; server=DNS-VB\BCT5422;; uid=111; pwd=11111; Connect Timeout=30"
+
+        'Dim cn As New SqlConnection(CONNECTION_STR_)
+        Dim da_CHILDREN_ As New SqlDataAdapter  'датаадптер для загрузки информации относительно таблицы в ds
+        Dim row_CHILDREN_ As Integer
+        Dim ds_CHILDREN_ As New DataSet
+        '**********
+        da_CHILDREN_.SelectCommand = New SqlCommand
+        da_CHILDREN_.SelectCommand.Connection = cn
+        da_CHILDREN_.SelectCommand.CommandType = CommandType.Text
+        da_CHILDREN_.SelectCommand.CommandText = SQL_
+        '********************** 
+        da_CHILDREN_.TableMappings.Add("Table", "CHILDREN_")
+        '*********************************
+        ' Load Data
+        row_CHILDREN_ = da_CHILDREN_.Fill(ds_CHILDREN_)
+        '****************
+        DataGridView1.DataSource = ds_CHILDREN_
+        '**********************
+        DataGridView1.DataMember = "CHILDREN_"
+        '**************************
+        'GoTo a
+        'Dim ID_ As Integer
+        ID_ = ds_CHILDREN_.Tables("CHILDREN_").Rows(row_CHILDREN_ - 1).Item("ID")
+        ID_ = ID_ + 1
+
+        'Dim row_ID As DataRow
+
+        row_ID = ds_CHILDREN_.Tables("CHILDREN_").NewRow
+
+        row_ID("ID") = ID_
+        row_ID("FK_ID") = "8"
+        row_ID("Дата_заказа") = "09.03.2017"
+        row_ID("Название") = "Грибная"
+        row_ID("Цена") = "355"
+        row_ID("Количество") = "23456"
+
+
+        ds_CHILDREN_.Tables("CHILDREN_").Rows.Add(row_ID)
+        '  GoTo a
+
+        '********************SQL
+        Dim daCHILDREN_ As New SqlDataAdapter(SQL_, cn)
+        '*****************************************************
+        'создали новый датаадаптер для осуществления операции обновления
+        Dim cbCHILDREN_ As New SqlCommandBuilder(daCHILDREN_)
+        ' используется для построения команд СКЛ
+        Try 'внесение изменений в правильном порядке открыли
+            Dim ChangedTable As New DataTable
+            'таблица в которую пишутся изменение
+            ChangedTable = ds_CHILDREN_.Tables("CHILDREN_").GetChanges
+            '*********************************
+            'ds-объект датасет из которого берутся данные Общий для всех кнопок
+            If Not ChangedTable Is Nothing Then
+                daCHILDREN_.Update(ChangedTable)
+            End If
+        Catch ex As Exception 'если исключительная ситуация то стреляет сообщение
+            MessageBox.Show(ex.Message)
+        End Try
+a:
+
+    End Sub
+End Class
