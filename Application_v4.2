@@ -1,0 +1,183 @@
+#include <iostream>;
+#include <set>;
+#include <vector>;
+#include <algorithm>;
+
+using namespace std;
+
+vector<pair<set <int>, int>> TempPopulation;
+
+bool SortFunction(pair<set <int>, int> elem1, pair < set <int>, int> elem2)
+{
+	return elem1.second < elem2.second;
+}
+
+void ExcessCut(vector<pair<set <int>, int>> & Population, set <int> & ExcludedVertex)
+{
+	for (set<int>::iterator it = Population[0].first.begin(); it != Population[0].first.end(); it++)
+		ExcludedVertex.insert(*it);
+	vector<pair<set <int>, int>>::iterator IteratorPopulation = Population.begin();
+	while (IteratorPopulation != Population.end())
+	{
+		bool temp = false;
+		for (set<int>::iterator it = IteratorPopulation[0].first.begin(); it != IteratorPopulation[0].first.end(); it++)
+		{
+			if (ExcludedVertex.count(*it)) {
+				IteratorPopulation = Population.erase(IteratorPopulation);
+				temp = true;
+				break;
+			}
+		}
+		if (!temp)
+			if ((IteratorPopulation++ != Population.end()) && (IteratorPopulation != Population.end()))
+				IteratorPopulation++;
+	}
+}
+
+bool Prime(unsigned long NumberVertex) // Простое ли число;
+{
+	unsigned long i, j, bound;
+	if (NumberVertex == 0 || NumberVertex == 1)
+		return false;
+	if (NumberVertex == 2 || NumberVertex == 3 || NumberVertex == 5)
+		return true;
+	if (NumberVertex % 2 == 0 || NumberVertex % 3 == 0 || NumberVertex % 5 == 0)
+		return false;
+	bound = sqrt((double)NumberVertex);
+	i = 7; j = 11;
+	while (j <= bound && NumberVertex%i && NumberVertex%j)
+	{
+		i += 6; j += 6;
+	}
+	if (j <= bound || i <= bound && NumberVertex%i == 0)
+		return false;
+	return true;
+}
+
+int PartSize(int NumberVertex) // вычисление максимально малой части разбиения
+{
+	if (NumberVertex % 2 == 0)
+		return 2;
+	if (NumberVertex % 3 == 0)
+		return 3;
+	if (NumberVertex % 5 == 0)
+		return 5;
+	for (int divisor = 7; divisor <= NumberVertex; divisor += 2)
+	{
+		if (NumberVertex % divisor == 0)
+		{
+			return divisor;
+			break;
+		}
+	}
+}
+
+int IntentValue(set <int> ElementPopulation, vector <vector<int>> AdjancencyMatrix)  // вычисление значения целевой функции
+{
+	int external = 0, internal = 0;
+	for (set<int>::iterator it = ElementPopulation.begin(); it != ElementPopulation.end(); it++)
+	{
+		for (int i = 1; i <= AdjancencyMatrix.size(); i++)
+		{
+			if (AdjancencyMatrix[*it - 1][i - 1] != 0)
+				if (ElementPopulation.count(i))
+				{
+					if (*it < i)
+						internal += AdjancencyMatrix[*it - 1][i - 1];
+				}
+				else
+					external += AdjancencyMatrix[*it - 1][i - 1];
+		}
+	}
+	int Value = external - internal;
+	return Value;
+}
+
+set <int> PartSet(int* PopulationMatrix, int NumberVertex)
+{
+	set <int> ElemPopulation;
+	for (int i = 0; i < PartSize(NumberVertex); i++)
+		ElemPopulation.insert(PopulationMatrix[i]);
+	return ElemPopulation;
+}
+
+
+vector<pair<set <int>, int>> SortingPopulation(int temp, int* PopulationMatrix, int NumberVertex, vector <vector<int>> AdjancencyMatrix)
+{
+	if (temp >= 0)
+	{
+		if (PopulationMatrix[temp] < NumberVertex + temp - PartSize(NumberVertex) + 1)
+		{
+			++PopulationMatrix[temp];
+			for (int i = temp + 1; i < PartSize(NumberVertex); i++)
+				PopulationMatrix[i] = PopulationMatrix[i - 1] + 1;
+			set <int> Part = PartSet(PopulationMatrix, NumberVertex);
+			TempPopulation.push_back(make_pair(Part, IntentValue(Part, AdjancencyMatrix)));
+			SortingPopulation(PartSize(NumberVertex) - 1, PopulationMatrix, NumberVertex, AdjancencyMatrix);
+		}
+		else
+			SortingPopulation(temp - 1, PopulationMatrix, NumberVertex, AdjancencyMatrix);
+	}
+	else
+		return TempPopulation;
+	return TempPopulation;
+}
+
+vector<pair<set <int>, int>> IntentionPopulation(int NumberVertex, vector<vector <int>> AdjacencyMatrix)
+{
+	int* PopulationMatrix = new int[PartSize(NumberVertex)];
+	for (int i = 0; i < PartSize(NumberVertex); i++)
+		PopulationMatrix[i] = i + 1;
+	vector<pair<set <int>, int>> ResultPopulation;
+	ResultPopulation.push_back(make_pair(PartSet(PopulationMatrix, NumberVertex), IntentValue(PartSet(PopulationMatrix, NumberVertex), AdjacencyMatrix)));
+	vector<pair<set <int>, int>> temp = SortingPopulation(PartSize(NumberVertex) - 1, PopulationMatrix, NumberVertex, AdjacencyMatrix);
+	ResultPopulation.insert(ResultPopulation.end(), temp.begin(), temp.end());
+	return ResultPopulation;
+}
+
+void main() {
+	setlocale(LC_ALL, "Rus");
+	int StartArc = 1, EndArc = 0, Num = 0;
+	int NumberVertex;
+
+	cout << "Введите кол-во вершин:";
+	cin >> NumberVertex;
+	cout << endl;
+	if (Prime(NumberVertex)) {
+		cout << "Возможно лишь тривиальное разбиение на равные части!" << endl;
+		system("pause");
+		exit(0);
+	}
+	vector<vector <int>> AdjacencyMatrix(NumberVertex, vector<int>(NumberVertex, 0));
+
+	while (StartArc != 0)  // ввод дуг и заполнение матрицы смежности
+	{
+		cout << "Начало дуги: "; cin >> StartArc;
+		if (StartArc == 0)
+			break;
+		cout << "Конец дуги: "; cin >> EndArc;
+		cout << "Кол-во ребер: "; cin >> Num;
+		AdjacencyMatrix[StartArc - 1][EndArc - 1] = Num;
+		AdjacencyMatrix[EndArc - 1][StartArc - 1] = Num;
+	}
+
+	std::vector<pair<set <int>, int>> Population;
+	Population = IntentionPopulation(NumberVertex, AdjacencyMatrix);
+	std::sort(Population.begin(), Population.end(), SortFunction); // сортировка по значению целевой функции
+
+	set <set <int>> GraphPart;
+	set <int> ExcludedVertex;
+	int i = 0;
+	cout << endl;
+	while (i != Population.size())
+	{
+		GraphPart.insert(Population[i].first);
+		cout << "( ";
+		for (set<int>::iterator it = Population[i].first.begin(); it != Population[i].first.end(); it++)
+			cout << *it << " ";
+		cout << ")" << endl;
+		ExcessCut(Population, ExcludedVertex);
+	}
+
+	system("pause");
+}
