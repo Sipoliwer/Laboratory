@@ -1,0 +1,146 @@
+#include <iostream>
+#include <list>
+#include <vector>
+#include <map>
+#include <ctime>
+using namespace std;
+
+
+struct Initial
+{
+	int ncub;
+	vector<vector<int>> vector_of_values;
+	int pop_size;
+};
+
+struct chromosome
+{
+	int ncub;
+	int v;
+	pair<int, int> s_i;
+	vector<pair<int, int>> res; //Результат 
+	vector<pair<int, int>> chromosome_generation()
+	{
+		for (int i = 0; i < v; i++)
+		{
+			s_i.first = i;
+			s_i.second = rand() % ncub + 1;
+			res.push_back(s_i);
+		}
+	};
+};
+
+class Genetic_algorithm
+{
+private:
+	vector<vector<int>> matrix_smej;
+	int ncub; // Кол-во кластеров
+	int pop_size; // Кол-во популяций в острове
+	vector<pair<int, float>> modularity;
+	vector<vector<pair<int, int>>> population;
+
+public:
+	void Initialization(Initial in) {
+		matrix_smej = in.vector_of_values;
+		ncub = in.ncub;
+		pop_size = in.pop_size;
+	};
+
+	void Population_Initialization()
+	{
+		chromosome chro;
+		chro.ncub = ncub;
+		chro.v = matrix_smej.size();
+		for (int i = 0; i < pop_size; i++)
+		{
+			population.push_back(chro.chromosome_generation());
+		}
+	};
+
+	pair<int, int> stepen(int i_ind, int j_ind)
+	{
+		pair<int, int> p;
+		for (int i = 0; i < i_ind; i++)
+		{
+			p.first += matrix_smej[i][j_ind];
+		}
+		for (int j = 0; j < j_ind; j++)
+		{
+			p.second += matrix_smej[i_ind][j];
+		}
+		return p;
+	};
+
+	bool cc(int k_ind, int i_ind, int j_ind)
+	{
+		if (population[k_ind][i_ind].second == population[k_ind][j_ind].second)
+		{
+			return 1;
+		}
+		else 
+		{
+			return 0;
+		}
+	}
+
+	void Modularity_value() //Fitness function()
+	{
+		float** Q = new float*[pop_size];
+		for (int k = 0; k < population.size(); k++)
+		{
+			Q[k] = new float[ncub];
+			for (int i = 0; i < matrix_smej.size(); i++)
+			{
+				for (int j = 0; j < matrix_smej.size(); j++)
+				{
+						pair<int, int> s = stepen(i, j);
+						Q[k][i] *= (matrix_smej[i][j] - (s.first*s.second / (2 * matrix_smej.size())))*cc(k,i,j);
+				}
+			}
+		}
+	};
+
+	void selection()
+	{
+
+	};
+
+	void crossover()
+	{
+
+	};
+
+	void mutation()
+	{
+
+	};
+};
+
+int main()
+{
+	srand(time(0));
+	Genetic_algorithm gen;
+	Initial in;
+	int v = 0; // Кол-во вершин
+	int e = 0; // Кол-во ребер
+	cout << "Введите количество кластеров: ";
+	cin >> in.ncub; cout << endl;
+	cout << "Введите количество вершин: ";
+	cin >> v;
+	cout << "Введите количество популяций: ";
+	cin >> in.pop_size;
+	vector<vector <int>> AdjacencyMatrix(v, vector<int>(v, 0));
+	int StartArc = 1, EndArc = 0, Num = 0;
+	while (StartArc != 0)  // ввод дуг и заполнение матрицы смежности
+	{
+		cout << "Начало ребра: "; cin >> StartArc;
+		if (StartArc == 0)
+			break;
+		cout << "Конец ребра: "; cin >> EndArc;
+		cout << "Вес ребра: "; cin >> Num;
+		AdjacencyMatrix[StartArc - 1][EndArc - 1] = Num;
+		AdjacencyMatrix[EndArc - 1][StartArc - 1] = Num;
+	}
+	gen.Initialization(in);
+	return 0;
+}
