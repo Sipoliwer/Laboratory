@@ -1,0 +1,63 @@
+def canonize(source):
+    stop_symbols = '.,!?:;-\n\r()[]_/*@#$%^&='
+
+    stop_words = (u'это', u'как', u'так',
+    u'и', u'в', u'над',
+    u'к', u'до', u'не',
+    u'на', u'но', u'за',
+    u'то', u'с', u'ли',
+    u'а', u'во', u'от',
+    u'со', u'для', u'о',
+    u'же', u'ну', u'вы',
+    u'бы', u'что', u'кто',
+    u'он', u'она')
+
+    return ( [x for x in [y.strip(stop_symbols) for y in source.lower().split()] if x and (x not in stop_words)] )
+
+def genshingle(source, shingleLen):
+    import binascii
+    out = [] 
+    for i in range(len(source)-(shingleLen-1)):
+        out.append (binascii.crc32(' '.join( [x for x in source[i:i+shingleLen]] ).encode('utf-8')))
+
+    return out
+   
+def compaire (source1,source2):
+    same = 0
+    for i in range(len(source1)):
+        if source1[i] in source2:
+            same = same + 1
+
+    return same*2/float(len(source1) + len(source2))*100
+    
+    from sklearn.datasets import fetch_20newsgroups
+cats = ['alt.atheism', 'sci.space']
+newsgroups_train = fetch_20newsgroups(subset = "train", categories = cats)
+    list(newsgroups_train.target_names)
+    newsgroups_train.filenames.shape
+    newsgroups_train.data[:2]
+    
+    import time
+import numpy as np
+import sys
+start_time = []
+end_time = []
+
+#with shingleLen = []
+shingleLenList = [2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+for num in shingleLenList:
+    start_time.append(time.time())
+    cmp = []
+    for i in range(len(newsgroups_train.data)):
+        cmp.append(genshingle(canonize(newsgroups_train.data[i]), num))
+    list_cmp_name = np.arange(len(newsgroups_train.data))
+    pairs = [(cmp[i], cmp[j], list_cmp_name[i], list_cmp_name[j]) for i in range(len(cmp)) for j in range(i + 1, len(cmp))]
+    end_time.append(time.time())
+ 
+i = 0
+sum_words = 0
+for item in newsgroups_train.data:
+    sum_words += len(item)
+    i += 1
+print(sum_words / i)
