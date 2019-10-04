@@ -1,0 +1,27 @@
+#Python
+
+from graphviz import Digraph
+import os
+os.environ["PATH"] += os.pathsep + "C:/Program Files (x86)/Graphviz2.38/bin
+
+from graphviz import Source
+
+file = r"C:\..."
+
+with open(file, "r") as file:
+  data = file.read()
+  s = Source(data, filename = "test_1.gv", format = "svg")
+  s.view()
+  
+# GraphViz
+
+digraph G{
+splines = "true"
+graph[pad = "0.5", edgesep = "6", ranksep = "5", nodesep = "0.3"]
+node[shape = "oval", width = 2, penwidth = 3, fontsize = 20, fontname = "Times-Bold"]
+edge[penwidth = 3, fontsize = 20, fontname = "Times-Bold"]
+Start_Node[shape = circle, width = 0.8, fillcolor = purple, style = filled, fontcolor = white]
+End_Node[shape = circle, width = 0.8, fillcolor = purple, style = filled, fontcolor = white]
+Start_Node -> Color_Blue[label = "COLOR-BLUE", color = blue, penwidth = 5]
+Start_Node -> Color_Red_Invis_Purple[label = "COLOR-RED-INVIS-RED", color = "red:invis:purple", penwidth = 5]
+} 
